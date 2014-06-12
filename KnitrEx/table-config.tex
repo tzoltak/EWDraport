@@ -1,0 +1,117 @@
+\documentclass[b5paper,10pt,twoside]{book}
+\usepackage[table]{xcolor}
+\definecolor{lightgray}{gray}{0.9}
+\usepackage[T1]{fontenc}
+\usepackage{emptypage}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage{indentfirst} 
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{etoolbox} 
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{geometry}
+\usepackage{makeidx}
+\usepackage{tabularx}
+\usepackage[font=footnotesize ,labelfont=bf]{caption}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{apacite}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+% dodanie verbatim umożliwia komentowanie wielu linii
+\usepackage{verbatim}
+\setlength{\footnotesep}{0pt}
+\setlength{\skip\footins}{0pt}
+\renewcommand\footnoterule{\vspace*{7pt}\hrule width 2.5cm\vspace*{4.6pt}}
+\let\lll\undefined
+\usepackage{amssymb}
+\usepackage{tabularx}
+\newcolumntype{S}{@{\stepcounter{Definition}~} >{\bfseries}l @{~--~}X@{}}
+\newcounter{Definition}[subsection]
+% wyśrodkowanie komórek w tabelkach: \renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}
+\renewcommand{\labelitemi}{\scriptsize$\square$   }
+\setlength{\footnotemargin}{3mm}
+%\newgeometry{bottom=1.5in, top=1.4in, footskip=0.7in, headsep=0.43in}
+\geometry{papersize={170.4mm,243mm}, bottom=2.02795cm, top=2.02795cm, footskip=0.7cm, headsep=0.3527778cm, left=1.5cm, right=1.5cm, textheight=576.00pt}
+\selectlanguage{polish}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\arraystretch}{1.4}\addtolength{\tabcolsep}{-1pt}
+\fancyhead{} % clear all fields
+\fancyfoot{} % clear all fields
+\fancyhead[LE]{Księga wizualizacji składu książki}
+\fancyhead[RO]{\nouppercase{\leftmark}}
+\fancyfoot[LE,RO]{\thepage}
+\makeatletter
+\patchcmd{\@fancyhead}{\rlap}{\color{darkgray}\rlap}{}{}
+\patchcmd{\headrule}{\hrule}{\color{darkgray}\hrule}{}{}
+\makeatother
+\widowpenalty=10000
+\clubpenalty=10000
+\usepackage{lettrine}\sloppy %zakaz wydłużania lini (gdzy nie może złożyć)
+\fancypagestyle{plain}{%
+   	\fancyhf{}                          % clear all header and footer fields
+    \renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+	\fancyfoot[LE,RO]{\thepage}
+}
+\graphicspath{ {Obrazy/} }
+\makeindex
+\usepackage[cam,a4,center]{crop}
+\parskip 0pt
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{30pt}{15.6pt}
+\titlespacing{\subsection}{0pt}{24pt}{12pt}
+\titlespacing{\subsubsection}{0pt}{18pt}{8pt}
+\titlespacing{\paragraph}{15pt}{2pt}{6pt}
+\usepackage{enumitem}
+\setlist{nolistsep}
+\setlist[itemize]{topsep=0pt}
+\renewcommand{\abovecaptionskip}{12pt}
+\renewcommand{\belowcaptionskip}{0pt}
+\renewcommand{\textfloatsep}{12pt}
+\makeatletter
+\newcommand\thefontsize{The current font size is: \f@size pt}
+\makeatother
+\makeatletter
+\def\@makechapterhead#1{%
+  %%%%\vspace*{50\p@}% %%% removed!
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \@chapapp\space \thechapter
+        \par\nobreak
+        \vskip 15.2\p@
+    \fi
+    \interlinepenalty\@M
+    \Huge \bfseries #1\par\nobreak
+    \vskip 36\p@
+  }}
+\def\@makeschapterhead#1{%
+  %%%%%\vspace*{50\p@}% %%% removed!
+  {\parindent \z@ \raggedright
+    \normalfont
+    \interlinepenalty\@M
+    \Huge \bfseries  #1\par\nobreak
+    \vskip 36\p@
+  }}
+\newcommand{\customchapter}[2]{
+    \setcounter{chapter}{#1}
+    \setcounter{section}{0}
+    \chapter*{#2}
+    \addcontentsline{toc}{chapter}{#2}
+}
+\newcommand{\customtitle}[2]{
+	\begin{flushleft}\textbf{#1 } #2 \end{flushleft}
+	\par\medskip
+	\rowcolors{1}{}{lightgray}
+}
+\makeatother

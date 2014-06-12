@@ -1,0 +1,68 @@
+% dodałem pakiet verbatim
+\input{table-config.tex}
+
+<<setup, echo = FALSE, results= 'hide', message = FALSE, warning=FALSE >>=
+require(EWDogolny)
+require(xtable)
+require(lme4)
+library(rattle)
+library(knitr)
+library(EWDraport)
+
+# U mnie trzeba ustawić na sztywno folder roboczy:
+folderRoboczy = "/home/grzesiek/EWDgit/EWDraport/"
+
+tabelaSzablonTex = paste0(folderRoboczy, "Dane/tabelaSzablon.tex")
+rysunekSzablonTex =  paste0(folderRoboczy,"Dane/rysunekSzablon.tex")
+rysunkiDiagnostyka =  paste0(folderRoboczy, "KnitrEx/Wykresy")
+
+# parametry
+dane = read.csv2(paste0(folderRoboczy, "Dane/gimn13-11sample.csv"))
+modele = list(
+   mh=lmer(hn ~ sn*(rok_g*wydl) + I(sn^2)*(rok_g*wydl) + I(sn^3)*(rok_g*wydl) + plec + dysl_g*dysl_s + (1|id_gimn), 
+           data=dane, REML=TRUE),
+   mm=lmer(mn ~ sn*(rok_g*wydl) + I(sn^2)*(rok_g*wydl)+ I(sn^3)*(rok_g*wydl) + I(sn^4)*(rok_g*wydl) + I(sn^5)*(rok_g*wydl) + plec + dysl_g*dysl_s + (1|id_gimn), data=dane, REML=TRUE)
+  )
+
+@
+
+ \begin{comment}
+<<MyT1, echo = FALSE, results = 'markup', warning=FALSE>>=
+diagnostyka(modele[[1]], zapiszPng = rysunkiDiagnostyka)
+tabelki = przygotuj_do_schowka_me(modele, pokaz=FALSE)
+
+#  save(tabelki, file = "knitr/tabelki.obj")
+# load(file = "/home/grzesiek/EWDgit/OLD/EWDogolny/EWDogolny/KnitrEx/tabelki.obj")
+tabela = tabelki[[3]][,!grepl("std", colnames(tabelki[[3]]))]
+@
+\end{comment}
+
+
+\begin{document}
+
+<<Tabelatestowa, echo = FALSE, results = 'asis', warning=FALSE>>=
+opisyZnacznikow = list( Numeracja = "Tabela 1.",
+                        Tytul = "To jest testowa tabela.",  
+                        Przypis = "To jest \\emph{testowy} podpis."  
+                        )
+
+drukuj_tabele(tabela, tabelaSzablonTex, znaczniki = opisyZnacznikow, precyzja = 4)
+
+rysunek1znaczniki = list( NumeracjaRysunku = "Rysunek 1.",
+                          PodpisRysunku = "Opis rysunku.", #ąęćśńźżł",
+                          Plik = paste0(folderRoboczy,"KnitrEx/Wykresy/_reszty_w_funkcji_przewidywania.png"),
+                          Przypis = "Przypis rysunku."
+                          )
+
+drukuj_szablon(rysunekSzablonTex, rysunek1znaczniki)
+
+znaczTab = list( Numeracja = "\\textbf{Testowa} numeracja.",
+                 Tytul = "To jest testowa tabela z wykresami.",
+                 Przypis = "To jest \\emph{podpis} do testowej tabeli z wykresami." 
+                 )
+
+sciezkiDiagnostyka = paste0(rysunkiDiagnostyka, "/", list.files(rysunkiDiagnostyka))
+drukuj_rysunki(sciezkiDiagnostyka[-3], c(2,2), znaczTab, tabelaSzablonTex)
+@
+
+\end{document}

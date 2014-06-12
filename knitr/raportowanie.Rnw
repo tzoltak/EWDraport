@@ -1,0 +1,72 @@
+\input{table-config.tex}
+
+<<setup, echo = FALSE, results= 'hide', message = FALSE>>=
+require(EWDogolny)
+require(xtable)
+require(lme4)
+library(rattle)
+library(knitr)
+library(EWDraport)
+tabelaSzablonTex = "/home/grzesiek/EWDgit/EWDraport/Dane/tabelaSzablon.tex"
+rysunekSzablonTex = "/home/grzesiek/EWDgit/EWDraport/Dane/rysunekSzablon.tex"
+rysunkiDiagnostyka = "/home/grzesiek/EWDgit/EWDraport/knitr/Wykresy"
+@
+
+<<MyT1, echo = FALSE, results = 'markup',warning=FALSE>>=
+
+# parametry
+
+# dane = read.csv2("/home/grzesiek/EWDgit/EWDraport/Dane/gimn13-11sample.csv")
+# modele = list(
+#    mh=lmer(hn ~ sn*(rok_g*wydl) + I(sn^2)*(rok_g*wydl) + I(sn^3)*(rok_g*wydl) + plec + dysl_g*dysl_s + (1|id_gimn), data=dane, REML=TRUE),
+#    mm=lmer(mn ~ sn*(rok_g*wydl) + I(sn^2)*(rok_g*wydl)+ I(sn^3)*(rok_g*wydl) + I(sn^4)*(rok_g*wydl) + I(sn^5)*(rok_g*wydl) + plec + dysl_g*dysl_s + (1|id_gimn), data=dane, REML=TRUE)
+#   )
+# 
+# diagnostyka(modele[[1]],zapiszPng=rysunkiDiagnostyka )
+# funkcja drukuj_raport, argumenty:
+# + lista modeli typu: modele[[1]]
+
+# wstawiaj rysunki w formie tabeli 2 na 2 
+
+
+#  tabelki
+#  tabelki = przygotuj_do_schowka_me(modele,pokaz=FALSE)
+#  save(tabelki, file = "knitr/tabelki.obj")
+# lub: 
+load(file = "/home/grzesiek/EWDgit/OLD/EWDogolny/EWDogolny/knitr/tabelki.obj")
+tabela = tabelki[[3]][,!grepl("std", colnames(tabelki[[3]]))]
+
+@
+
+\begin{document}
+
+<<Tabelatestowa, echo = FALSE, results = 'asis', warning=FALSE>>=
+    
+    opisyZnacznikow = list( Numeracja = "\\textbf{Testowa} numeracja.",
+                            Tytul = "To jest testowa tabela.",
+                            Przypis = "To jest \\emph{testowy} napis."
+                            )
+
+  drukuj_tabele(tabela[, ], tabelaSzablonTex, znaczniki = opisyZnacznikow, precyzja = 4)
+
+  rysunek1znaczniki = list( NumeracjaRysunku = "NumeracjaRysunku",
+                            PodpisRysunku = "asdsad", #ąęćśńźżł",
+                            Plik = "/home/grzesiek/EWDgit/EWDraport/knitr/Wykresy/_reszty_w_funkcji_przewidywania.png",
+                            Przypis = "Przypis do rysunku"
+                            )
+
+  drukuj_szablon(rysunekSzablonTex, rysunek1znaczniki)
+
+  znaczTab = list( Numeracja = "\\textbf{Testowa} numeracja.",
+                        Tytul = "To jest testowa tabela z rysunkami.",
+                        Przypis = "To jest \\emph{napis}."
+                      )
+
+  sciezkiDiagnostyka = paste0(rysunkiDiagnostyka, "/", list.files(rysunkiDiagnostyka))
+
+  drukuj_rysunki(sciezkiDiagnostyka[-3], c(2,2), znaczTab, tabelaSzablonTex)
+
+@
+
+
+\end{document}
