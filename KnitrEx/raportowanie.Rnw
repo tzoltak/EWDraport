@@ -1,5 +1,6 @@
 % dodałem pakiet verbatim
-\input{table-config.tex}
+\input{config.tex}
+\input{config-table.tex}
 
 <<setup, echo = FALSE, results= 'hide', message = FALSE, warning=FALSE >>=
 require(EWDogolny)
@@ -9,7 +10,7 @@ library(rattle)
 library(knitr)
 library(EWDraport)
 
-# U mnie trzeba ustawić na sztywno folder roboczy:
+# trzeba ustawić na sztywno folder roboczy:
 folderRoboczy = "/home/grzesiek/EWDgit/EWDraport/"
 
 tabelaSzablonTex = paste0(folderRoboczy, "Dane/tabelaSzablon.tex")
@@ -28,8 +29,8 @@ modele = list(
 
  \begin{comment}
 <<MyT1, echo = FALSE, results = 'markup', warning=FALSE>>=
-diagnostyka(modele[[1]], zapiszPng = rysunkiDiagnostyka)
-tabelki = przygotuj_do_schowka_me(modele, pokaz=FALSE)
+ diagnostyka(modele[[1]], zapiszPng = rysunkiDiagnostyka)
+ tabelki = przygotuj_do_schowka_me(modele, pokaz = FALSE)
 
 #  save(tabelki, file = "knitr/tabelki.obj")
 # load(file = "/home/grzesiek/EWDgit/OLD/EWDogolny/EWDogolny/KnitrEx/tabelki.obj")
@@ -41,6 +42,13 @@ tabela = tabelki[[3]][,!grepl("std", colnames(tabelki[[3]]))]
 \begin{document}
 
 <<Tabelatestowa, echo = FALSE, results = 'asis', warning=FALSE>>=
+
+rozdzial("Przykładowe rysunki i tabele")
+akapit("Ten rozdział zawiera przykładowe rysunki oraz tabele.")
+
+podrozdzial("Tabela")
+akapit("Poniżej czytelnik znajdzie tabelę.")
+
 opisyZnacznikow = list( Numeracja = "Tabela 1.",
                         Tytul = "To jest testowa tabela.",  
                         Przypis = "To jest \\emph{testowy} podpis."  
@@ -48,13 +56,22 @@ opisyZnacznikow = list( Numeracja = "Tabela 1.",
 
 drukuj_tabele(tabela, tabelaSzablonTex, znaczniki = opisyZnacznikow, precyzja = 4)
 
+
+nowa_strona()
+podrozdzial("Przykładowy pojedynczy rysunek.")
+akapit("Poniżej znajduje się  pojedynczy rysunek.")
+
 rysunek1znaczniki = list( NumeracjaRysunku = "Rysunek 1.",
-                          PodpisRysunku = "Opis rysunku.", #ąęćśńźżł",
+                          PodpisRysunku = "Opis rysunku.",
                           Plik = paste0(folderRoboczy,"KnitrEx/Wykresy/_reszty_w_funkcji_przewidywania.png"),
-                          Przypis = "Przypis rysunku."
+                          Przypis = "Przypis rysunku.",
+                          Mnożnik = "0.8"
                           )
 
 drukuj_szablon(rysunekSzablonTex, rysunek1znaczniki)
+
+nowa_strona()
+podrozdzial("Przykładowy tabela z  rysunkami.")
 
 znaczTab = list( Numeracja = "\\textbf{Testowa} numeracja.",
                  Tytul = "To jest testowa tabela z wykresami.",
@@ -63,6 +80,14 @@ znaczTab = list( Numeracja = "\\textbf{Testowa} numeracja.",
 
 sciezkiDiagnostyka = paste0(rysunkiDiagnostyka, "/", list.files(rysunkiDiagnostyka))
 drukuj_rysunki(sciezkiDiagnostyka[-3], c(2,2), znaczTab, tabelaSzablonTex)
+
+
+akapit("Lista z numeracją:")
+lista_numerowana(c("pierwszy element;","drugi element;","trzeci element;"))
+
+akapit("Lista punktowana:")
+lista_punktowana(c("pierwszy element;","drugi element;","trzeci element;"))
+
 @
 
 \end{document}

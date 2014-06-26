@@ -3,6 +3,65 @@
 #' 
 #' @param n
 #' @return 
+#' @export
+rozdzial <- function(tytul){
+  cat(paste0("\\chapter{", tytul, "}"))  
+}
+#' @title Drukowanie szablonu latex
+#' @description
+#' 
+#' @param n
+#' @return 
+#' @export
+podrozdzial <- function(tytul){
+  cat(paste0("\\customsect{\\section*{", tytul, "}}"),"\n")
+  cat(paste0("\\addcontentsline{toc}{section}{", tytul, "}"))
+}
+
+#' @title Drukowanie szablonu latex
+#' @description
+#' 
+#' @param n
+#' @return 
+#' @export
+akapit <- function(tresc){
+  cat("\n\n",paste(tresc,collapse="\n\n"))
+}
+#' @title
+#' @description
+#' 
+#' @param n
+#' @return 
+#' @export
+nowa_strona <- function(){
+  cat("\\newpage")
+}
+#' @title
+#' @description
+#' 
+#' @param n
+#' @return 
+lista_numerowana <- function(elementyListy){
+  cat(paste0("\\begin{enumerate}[leftmargin=*]"))
+  cat("\n \\item ", paste(elementyListy, collapse="\n \\item "),"\n")
+  cat(paste0("\\end{enumerate}")) 
+}
+#' @title
+#' @description
+#' 
+#' @param n
+#' @return 
+lista_punktowana <- function(elementyListy){
+  cat(paste0("\\begin{itemize}[leftmargin=*]"))
+  cat("\n \\item ", paste(elementyListy, collapse="\n \\item "),"\n")
+  cat(paste0("\\end{itemize} ")) 
+}
+
+#' @title Drukowanie szablonu latex
+#' @description
+#' 
+#' @param n
+#' @return 
 drukuj_szablon <- function(plikSzablonuTex, znaczniki, tex = TRUE){
   
   con = file(plikSzablonuTex, open="r")
