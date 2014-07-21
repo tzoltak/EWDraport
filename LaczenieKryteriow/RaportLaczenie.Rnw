@@ -1,0 +1,234 @@
+\input{config.tex}
+\input{config-table.tex}
+
+\begin{document}
+
+<<Funkcje, echo = FALSE, results= 'hide', message = FALSE, warning=FALSE >>=
+Sys.setlocale("LC_ALL", "pl_PL.UTF-8")
+library(EWDraport)
+library(knitr)
+
+raport_mirt_laczenie <- function(tabelaPolaczen, nazwaSkalowania,
+                                 tabelaSzablonTex, znacznikiTabeli, 
+                                 tekstAkapitu, 
+                                 tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, ktoreRys,
+                                 szerokosc = 1){
+  
+  plikTabeliTex = tabelaSzablonTex
+  drukuj_tabele(tabelaPolaczen, tabelaSzablonTex, znaczniki = znacznikiTabeli, precyzja = 4)
+  
+  if(!is.null(tekstAkapitu)){
+    akapit(tekstAkapitu)
+  }
+  
+  rysunki = paste0("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/Rysunki/", 
+                   nazwaSkalowania, "_theta_hist_", ktoreRys, ".png")
+  
+  drukuj_rysunki(rysunki, c(2,2), znacznikiTabeliRysunkow, tabelaSzablonRysunkiTex,
+                 szerokosc)
+}
+
+@
+
+<<WczytanieDanych, echo = FALSE, results= 'hide', message = FALSE, warning=FALSE >>=
+folderRoboczy = "/home/g.golonka/EWDgit/EWDraport/"
+
+tabelaSzablonTex = paste0(folderRoboczy, "Dane/tabelaSzablon.tex")
+tabelaSzablonRysunkiTex = paste0(folderRoboczy, "Dane/tabelaSzablonRysunki.tex")
+rysunekSzablonTex =  paste0(folderRoboczy,"Dane/rysunekSzablon.tex")
+rysunkiDiagnostyka =  paste0(folderRoboczy, "KnitrEx/Wykresy")
+
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki14_BIC")
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki03_BIC")
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_14_BIC")
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_07_BIC")
+
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/skWynik2008_2")
+skWynik2008 = skWynik2008_2
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/skWynik2008_pol")
+
+initializuj_numeracje()
+
+# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki14_podsum")
+# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki03_podsum")
+# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_14_podsum")
+# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_07_podsum")
+@
+
+<<Prezentacja, echo = FALSE, results = 'asis', warning=FALSE>>=
+rozdzial("Szukanie naruszeń założenia o lokalnej niezależności kryteriów")
+
+akapit("Podczas przeprowadzania skalowania modelami IRT w modelu jednoczynnikowym istotne jest, aby kryteria były zależne tylko od badanej umiejętności. Sytuacja, gdy część z nich zależy dodatkowo od innych konstruktów, objawia się tym, że są ze sobą silnie skorelowane, a wartości estymowanych umiejętności posiadają rozkład daleki od normalnego. Dlatego też ważne jest opracowanie strategii radzenia sobie w takiej sytuacji. Podejście prezentowane w tym dokumencie zakłada zsumowanie wyników kryteriów, które zostały rozpoznane jako zależne od wspólnego czynnika. Tutaj zostaną zaprezentowane dwa główne podejścia: jedno związane z wprowadeniem dodatkowego konstruktu do modeli IRT, a drugie oparte o estymacje korelacji polichorycznych dla kryteriów.")
+
+# akapit("Podczas przeprowadzania skalowania modelami IRT w modelu jednoczynnikowym istotne jest, aby kryteria były zależne tylko od badanej umiejętności. Sytuacja, gdy część z nich zależy dodatkowo od innych konstruktów, może podwodować, że rozkład mierzonej cechy jest nieregularny, a kryteria zależne od dodatkowej cechy są skorelowane silniej niż kryteria zależne tylko od badanej wartości. Dlatego też ważne jest opracowanie strategii radzenia sobie w takiej sytuacji. Podejście prezentowane w tym artykule zakłada zsumowanie wyników kryteriów, które zostały rozpoznane jako zależne. Interesującym aspektem jest również typowanie kryteriów do połączenia. Tutaj zostaną zaprezentowane dwa główne podejścia: jedno związane z wprowadeniem dodatkowego konstruktu do modeli IRT, a drugie oparte o estymacje korelacji polichorycznych dla kryteriów.")
+
+podrozdzial("Łączenie kryteriów w dwuczynnikowym modelu IRT")
+
+akapit("Jeżeli do estymacji parametrów egzaminu, którego celem jest pomiar umiejętności jednego rodzaju, użyjemy modeli z dodatkowym konstruktem, to będzie on wyjaśniać zmienność danych powodowaną przez inne czynniki wpływające na rezutaty egzaminu. ")
+
+
+tabela = mirtWyniki14$polaczenia
+colnames(tabela) <-c("Numer połączenia", "Kryterium 1", "Kryterium 2",
+                     "F_2 1", "F_2 2", "h2 1", "h2 2")
+
+znacznikiTabeli = list( Numeracja = numeracja("Tabela"), 
+                        Tytul = "Łączenie dwóch kryteriów na podstawie konstruktu F_2.",  
+                        Przypis = "Tabela zawiera kolejność łączeń kryteriów w oparciu 
+                        o dwuczynnikowy model IRT. W jednej iteracji 
+                        wykorzystywano do łączenia dwa kryteria o najwyższej wartości   
+                        bezwzględnej drugiego czynnika (F_2). Numery po miarach F_2 i h2 odnoszą 
+                        się do numeru kolumny kryterium, dla którego miara została wyliczona."  
+                        )
+
+znacznikiTabeliRysunkow = list( Numeracja = numeracja("Wykresy"),
+                                Tytul = "Wybrane histogramy umiejętności 
+                                dla połączeń z tabeli 1.",
+                                Przypis = "Histogramy umiejętności w modelu IRT 
+                                z jednym konstruktem dla połączeń opisanych w tabeli 1. 
+                                Numer iteracji wskazuje numer połączenia, 
+                                przed którym wykonywano estymację.",
+                                Szerokosc = 0.9
+                                )
+
+tekstAkapitu = ""
+
+raport_mirt_laczenie( tabela, "mirtWyniki14",
+                      tabelaSzablonTex, znacznikiTabeli,
+                      tekstAkapitu,
+                      tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, c(3,5,6,7),
+                      szerokosc = 0.9)
+
+############################
+
+tabela = mirtWyniki03$polaczenia
+colnames(tabela) <-c("Numer połączenia", "Kryterium 1", "Kryterium 2",
+                     "F_2 1", "F_2 2","h2 1","h2 2")
+
+znacznikiTabeli = list( Numeracja =  numeracja("Tabela"),
+                        Tytul = "Łączenie kryteriów w grupach na podstawie konstruktu F_2.",
+                        Przypis = "Tabela zawiera kolejność łączeń kryteriów w oparciu 
+                        o dwuczynnikowy model IRT. W jednej iteracji 
+                        wykorzystywano do łączenia wszystkie kryteria, 
+                        dla których wartość konstruktu F2 przekroczyła 0.3."
+                        )
+
+znacznikiTabeliRysunkow = list( Numeracja = numeracja("Wykresy"),
+                                Tytul = "Wybrane histogramy umiejętności dla grupowych
+                                połączeń kryteriów według konstruktu F_2.",
+                                Przypis = "Histogramy umiejętności modelu jednoczynnikowego 
+                                IRT dla kolejnych połączeń zawartych w tabeli 2.",
+                                Szerokosc = 0.9
+                                )
+tekstAkapitu = ""
+
+raport_mirt_laczenie( tabela, "mirtWyniki03",
+                      tabelaSzablonTex, znacznikiTabeli,
+                      tekstAkapitu,
+                      tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, 1:4,
+                      szerokosc = 0.9)
+
+############################### mirtWyniki03
+
+tabela = mirtWyniki_h2_14$polaczenia
+colnames(tabela) <-c("Numer połączenia","Kryterium 1", "Kryterium 2",
+                     "F_2 1", "F_2 2","h2 1","h2 2")
+
+znacznikiTabeli = list( Numeracja =  numeracja("Tabela"),
+                        Tytul = "Łączenie dwóch kryteriów na podstawie miary h2.",  
+                        Przypis = "Tabela zawiera kolejność łączeń kryteriów w oparciu 
+                        o wyliczenia w dwuczynnikowym modelu IRT. W jednej iteracji 
+                        wykorzystywano do łączenia dwa kryteria o najwyższej wartości
+                        miary h2."
+                        )
+
+znacznikiTabeliRysunkow = list( Numeracja = numeracja("Wykresy"),
+                                Tytul = "Wybrane histogramy umiejętności 
+                                dla połączeń zawartych w tabeli 3.",
+                                Przypis = "Histogramy umiejętności w modelu IRT 
+                                z jednym konstruktem dla połączeń opisanych w tabeli 3.",
+                                Szerokosc = 0.9
+                                )
+tekstAkapitu = ""
+
+raport_mirt_laczenie( tabela, "mirtWyniki_h2_14",
+                      tabelaSzablonTex, znacznikiTabeli,
+                      tekstAkapitu,
+                      tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, c(3,5,6,7),
+                      szerokosc = 0.9)
+
+tabela = mirtWyniki_h2_07$polaczenia
+colnames(tabela) <-c("Numer połączenia","Kryterium 1", "Kryterium 2",
+                    "F_2 1", "F_2 2","h2 1","h2 2")
+ 
+znacznikiTabeli = list( Numeracja =  numeracja("Tabela"),
+                       Tytul = "Grupowe łączenie kryteriów na podstawie miary h2.",  
+                       Przypis = "Tabela zawiera kolejność łączeń kryteriów w oparciu 
+                       o dwuczynnikowy model IRT, gdzie w jednej iteracji 
+                       łączono kryteria, dla których wartość h2 przekraczała 0.7."
+                       )
+ 
+znacznikiTabeliRysunkow = list( Numeracja = numeracja("Wykresy"),
+                                Tytul = "Wybrane histogramy umiejętności dla grupowych
+                                połączeń kryteriów według miary h2.",
+                                Przypis = "Histogramy umiejętności modelu jednoczynnikowego 
+                                IRT dla kolejnych połączeń opisanych w tabeli 4.",
+                                Szerokosc = 0.9
+                               )
+tekstAkapitu = ""
+raport_mirt_laczenie(tabela, "mirtWyniki_h2_07",
+                     tabelaSzablonTex, znacznikiTabeli,
+                     tekstAkapitu,
+                     tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, 1:2,
+                      szerokosc = 0.9)
+
+################################### polichoryczne #####################
+
+podrozdzial("Wybór łączonych kryteriów na podstawie korelacji polichorycznych.")
+
+
+tabela = skWynik2008$korelacjaWiazki[1:10, 1:4]
+colnames(tabela) <-c("Numer połączenia","Kryterium 1", "Kryterium 2", "1 - R2")
+ 
+znacznikiTabeli = list( Numeracja =  numeracja("Tabela"),
+                       Tytul = "Połączenie kryteriów na podstawie korelacji polichorycznych.",  
+                       Przypis = ""  
+                       )
+ 
+znacznikiTabeliRysunkow = list( Numeracja = numeracja("Wykresy"),
+                               Tytul = "Wykresy umiejętności dla połączeń na podstawie korelacji 
+                               zawartych w tabeli 5.",
+                               Przypis = "",
+                               Szerokosc = 0.9
+                               )
+tekstAkapitu = ""
+raport_mirt_laczenie(tabela, "polichor",
+                     tabelaSzablonTex, znacznikiTabeli,
+                     tekstAkapitu,
+                     tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, c(3,5,6,7),
+                     szerokosc = 0.9)
+
+
+tabela = data.frame(1:nrow(skWynik2008_pol$polaczenie), skWynik2008_pol$polaczenie)
+colnames(tabela) <-c("Numer połączenia","Kryterium 1", "Kryterium 2", "1 - R2")
+ 
+znacznikiTabeli = list( Numeracja =  numeracja("Tabela"),
+                       Tytul = "Połączenie kryteriów na podstawie korelacji polichorycznych.",  
+                       Przypis = ""  
+                       )
+
+znacznikiTabeliRysunkow = list( Numeracja = numeracja("Wykresy"),
+                               Tytul = "Wykresy umiejętności dla połączeń na podstawie korelacji 
+                               zawartych w tabeli 6.",
+                               Przypis = "",
+                               Szerokosc = 0.9
+                               )
+tekstAkapitu = ""
+raport_mirt_laczenie(tabela, "polichor_pol",
+                     tabelaSzablonTex, znacznikiTabeli,
+                     tekstAkapitu,
+                     tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, c(3,5,6,7),
+                     szerokosc = 0.9)
+                     
+@
+
+\end{document}

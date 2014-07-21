@@ -24,6 +24,8 @@ drukuj_tabele <- function(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz
   
   for(i in 1:ncol(tabela)){
     
+    # colnames(tabela) <- zamien_znaki_tex(colnames(tabela))
+    
     if(is.factor(tabela[,i])){
       tabela[,i] = as.character(tabela[,i])
     }
@@ -51,7 +53,7 @@ drukuj_tabele <- function(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz
   # drukuj pierwszy wiersz (naglowek tabeli)
   if(naglowek){
     ind =  wiersze[1]
-    drukuj_wiersz_tabeli(linie[ind], colnames(tabela))
+    drukuj_wiersz_tabeli(linie[ind], zamien_znaki_tex(colnames(tabela)))
   }
   
   # drukuj srodkowe wiersze

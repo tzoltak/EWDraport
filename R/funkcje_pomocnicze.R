@@ -1,3 +1,4 @@
+
 #' @title Drukowanie szablonu latex
 #' @description
 #' 
@@ -123,7 +124,7 @@ zamien_znaczniki <- function(nazwa, znaczniki ){
   
   ret = nazwa
   for(i in seq_along(znaczniki)){
-    ret = gsub(paste0("!", names(znaczniki)[i]), znaczniki[[i]], ret, fixed  = TRUE)
+    ret = gsub(paste0("!", names(znaczniki)[i]), zamien_znaki_tex(znaczniki[[i]]), ret, fixed  = TRUE)
   }
   return(ret)
 }
@@ -135,13 +136,72 @@ zamien_znaczniki <- function(nazwa, znaczniki ){
 #' @param nazwa ciąg znaków do zmiany
 #' @return Przekształcony ciąg znaków.
 zamien_znaki_tex <- function(nazwa){
-  znakiOrg = c("_","^")
-  znakiTex = c("\\_","\\^{ }")
+#   znakiOrg = c("_","^")
+#   znakiTex = c("\\_","\\^{ }")
+#   
+#   ret = nazwa
+#   for(i in seq_along(znakiOrg)){
+#     ret = gsub(znakiOrg[i], znakiTex[i], ret, fixed  = TRUE)
+#   }
+#   
+#   return(ret)
+  return(zamien_znaki(nazwa, strOrg = c("_","^"), strN = c("\\_","\\^{ }")))
+}
+#' @title Zamień znaki.
+#' @description
+#' Funkcja przekształca ciąg znaków zastępując podciągi (zadane parametrem znakiOrg)
+#' na odpowiadające im podciągi zadane parametrem znakiNowe.
+#' @param nazwa ciąg znaków do zmiany
+#' @param strOrg wektor ciągów znaków do zastąpienia.
+#' @param strN wektor ciągów znaków zastępujące odpowiednie elementy z strOrg.
+#' @return Przekształcony ciąg znaków.
+#' @export
+zamien_znaki <- function(nazwa, strOrg, strN){
+  if(length(strOrg)!=length(strN)){
+    stop("Różna długość wektorów ze znakami.")
+  }
   
   ret = nazwa
-  for(i in seq_along(znakiOrg)){
-    ret = gsub(znakiOrg[i], znakiTex[i], ret, fixed  = TRUE)
+  for(i in seq_along(strOrg)){
+    ret = gsub(strOrg[i], strN[i], ret, fixed  = TRUE)
   }
   
   return(ret)
 }
+#' @title Initializacja numeracji
+#' @description
+#' Funkcja initializuje numeracje. U�ywaj�c numeracji nie powinno si� 
+#' zmienia� zmiennej globalnej 'numeracjaTex'.
+#' @return 
+#' Funkcja zwraca obiekt klasy 'NumeracjaTex'.
+#' @export
+initializuj_numeracje <- function(){
+  ret = data.frame(nazwa="Wykresy", numer=0, stringsAsFactors = FALSE)
+  class(ret) = "NumeracjaTex"
+  numeracjaTex <<- ret
+  invisible(NULL)
+}
+#' @title Numeracja
+#' @description
+#' Funkcja dokleja do parametru nazwa numer, kt�ry oznacza kolejno�� wywo�ania funcji z tym parametrem.
+#' U�ywaj�c numeracji nie powinno si� zmienia� zmiennej globalnej 'numeracjaTex'.
+#' @param nazwa nazwa numerowanego obiektu
+#' @return 
+#' @export
+numeracja <- function(nazwa){ 
+  if( ! "numeracjaTex" %in% ls(envir=.GlobalEnv) || class(get('numeracjaTex'))!="NumeracjaTex"){
+    stop("Obiekt numeracjaTex nie jest poprawnie zainicjowany.")
+  }
+  
+  if(!nazwa %in% numeracjaTex$nazwa){
+    ret <<- rbind(numeracjaTex, data.frame(nazwa=nazwa, numer=0, stringsAsFactors = FALSE))
+    class(ret) = "NumeracjaTex"
+    numeracjaTex <<- ret 
+  }
+  
+  numer = numeracjaTex$numer[nazwa==numeracjaTex$nazwa] + 1 
+  numeracjaTex$numer[nazwa==numeracjaTex$nazwa] <<- numer
+  return(paste0(nazwa, " ", numer, "."))
+}
+
+

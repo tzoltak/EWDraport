@@ -7,9 +7,8 @@ Author: Grzegorz Golonka <ggolonka@o2.pl>
 Maintainer: Grzegorz Golonka <ggolonka@o2.pl>
 Description: Utility functions used to build knitr reports automatically.
 Depends:
-    R (>= 2.15.0)
+    knitr, R (>= 2.15.0)
 Suggests:
-    knitr
 License: LGPL-3
 Language: pl
 NeedsCompilation: no
