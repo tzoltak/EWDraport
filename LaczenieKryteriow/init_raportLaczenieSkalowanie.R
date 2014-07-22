@@ -66,18 +66,18 @@ rysunki_skalowanie_polichoryczne <- function(obj_polichoryczny, dirPath, nazwa =
 
 dirPath = "/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/Rysunki/"
 
-# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki14_podsum")
-# rysunki_skalowanie_mirt(mirtWyniki14_podsum, dirPath, "mirtWyniki14")
-# 
-# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki03_podsum")
-# rysunki_skalowanie_mirt(mirtWyniki03_podsum, dirPath, "mirtWyniki03")
-# 
-# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_14_podsum")
-# rysunki_skalowanie_mirt(mirtWyniki_h2_14_podsum, dirPath, "mirtWyniki_h2_14")
-# 
-# load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_07_podsum")
-# rysunki_skalowanie_mirt(mirtWyniki_h2_07_podsum, dirPath, "mirtWyniki_h2_07")
-# 
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki14_podsum")
+rysunki_skalowanie_mirt(mirtWyniki14_podsum, dirPath, "mirtWyniki14")
+
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki03_podsum")
+rysunki_skalowanie_mirt(mirtWyniki03_podsum, dirPath, "mirtWyniki03")
+
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_14_podsum")
+rysunki_skalowanie_mirt(mirtWyniki_h2_14_podsum, dirPath, "mirtWyniki_h2_14")
+
+load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/Wyniki/mirtWyniki_h2_07_podsum")
+rysunki_skalowanie_mirt(mirtWyniki_h2_07_podsum, dirPath, "mirtWyniki_h2_07")
+
 load("/home/g.golonka/EWDgit/EWDskalowanie/Skrypty/skWynik2008_2")
 rysunki_skalowanie_polichoryczne(skWynik2008, dirPath)
 
