@@ -1,0 +1,177 @@
+\documentclass[b5paper,10pt,twoside]{book}
+\usepackage{verbatim}
+\usepackage[table]{xcolor}
+\definecolor{lightgray}{gray}{0.9}
+\usepackage[T1]{fontenc}
+\usepackage{emptypage}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage{indentfirst} 
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{etoolbox} 
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{geometry}
+\usepackage{makeidx}
+\usepackage{tabularx}
+\usepackage[font=footnotesize ,labelfont=bf]{caption}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{apacite}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+\setlength{\footnotesep}{0pt}
+\setlength{\skip\footins}{7pt}
+\renewcommand\footnoterule{\kern-3pt \hrule width 2.5cm \kern 2.6pt}
+\let\lll\undefined
+\usepackage{amssymb}
+\usepackage{tabularx}
+\newcolumntype{S}{@{\stepcounter{Definition}~} >{\bfseries}l @{~--~}X@{}}
+\newcounter{Definition}[subsection]
+% wyśrodkowanie komórek w tabelkach: \renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}
+\renewcommand{\labelitemi}{\scriptsize$\square$   }
+\setlength{\footnotemargin}{3mm}
+%\newgeometry{bottom=1.5in, top=1.4in, footskip=0.7in, headsep=0.43in}
+\geometry{papersize={165mm,235mm}, left=1.5cm, right=1.5cm, top=1cm, bottom=1cm,	
+	includeheadfoot, headsep=9mm, footskip=1cm+7.5pt}
+\selectlanguage{polish}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\arraystretch}{1.4}\addtolength{\tabcolsep}{-1pt}
+\fancyhead{} % clear all fields
+\fancyfoot{} % clear all fields
+% \fancyhead[LE]{Księga wizualizacji składu książki}
+\fancyhead[RO]{\nouppercase{\leftmark}}
+\fancyfoot[LE,RO]{\thepage}
+\makeatletter
+\patchcmd{\@fancyhead}{\rlap}{\color{darkgray}\rlap}{}{}
+\patchcmd{\headrule}{\hrule}{\color{darkgray}\hrule}{}{}
+\makeatother
+\widowpenalty=10000
+\clubpenalty=10000
+\usepackage{lettrine}\sloppy %zakaz wydłużania lini (gdzy nie może złożyć)
+\fancypagestyle{plain}{%
+   	\fancyhf{}                          % clear all header and footer fields
+    \renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+	\fancyfoot[LE,RO]{\thepage}
+}
+\graphicspath{ {Obrazy/} }
+\makeindex
+\usepackage[cam,a4,center]{crop}
+\parskip 0pt
+
+\usepackage[compact]{titlesec}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{\strut}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{\strut}
+\titlespacing{\section}{0pt}{24pt}{6pt}
+\titlespacing{\subsection}{0pt}{24pt}{10pt}
+\titlespacing{\subsubsection}{0pt}{18pt}{8pt}
+\titlespacing{\paragraph}{15pt}{2pt}{6pt}
+
+\newdimen\tempprevdepth
+
+\newcommand{\customsect}[1]{
+	\vskip 0pt
+	\kern\baselineskip
+	\kern-\topskip
+	\kern-\prevdepth
+	\tempprevdepth=\prevdepth
+	\prevdepth=-1000pt
+	#1
+	\vskip\tempprevdepth
+	\kern-\baselineskip
+	\kern\topskip
+	\prevdepth=\tempprevdepth
+}
+
+\newcommand{\aligntobaseline}[1]{
+	\begingroup
+		\newbox\tobemeasured
+		\setbox\tobemeasured=\vbox{#1}
+		\newcount\a
+		\newcount\b
+		\a=\ht\tobemeasured
+		\advance\a by\dp\tobemeasured
+		\b=\a
+		\divide\a by\baselineskip
+		\multiply\a by\baselineskip
+		\advance\b by-\a
+		\ifnum\b=0
+			\unvbox\tobemeasured
+		\else
+			\a=\baselineskip
+			\advance\a by-\b
+			%\hrule\kern-.4pt
+			\unvbox\tobemeasured			
+			%\hrule\kern-.4pt
+			\vskip\a sp
+			%\hrule\kern-.4pt
+			\nointerlineskip
+		\fi
+	\endgroup
+}
+
+\usepackage{enumitem}
+\setlist{nolistsep}
+\setlist[itemize]{topsep=0pt}
+\setlist[enumerate]{topsep=0pt}
+\renewcommand{\abovecaptionskip}{12pt}
+\renewcommand{\belowcaptionskip}{0pt}
+\renewcommand{\textfloatsep}{12pt}
+\makeatletter
+\newcommand\thefontsize{The current font size is: \f@size pt}
+\makeatother
+\makeatletter
+\def\@makechapterhead#1{%
+  %%%%\vspace*{50\p@}% %%% removed!   
+  \aligntobaseline{	
+	  \vbox{\parindent \z@ \raggedright \normalfont
+		\ifnum \c@secnumdepth >\m@ne
+			\huge\bfseries \@chapapp\space \thechapter
+			\par\nobreak
+			\vskip 15.2\p@
+		\fi
+		\interlinepenalty\@M
+		\Huge \bfseries #1\par\nobreak
+		\vskip 36\p@
+	  }}
+	  \prevdepth=0pt
+	  \vskip\topskip
+	  \vskip-\baselineskip}
+	
+\def\@makeschapterhead#1{%
+  %%%%%\vspace*{50\p@}% %%% removed! 
+  \aligntobaseline{
+	  \vbox{\parindent \z@ \raggedright
+		\normalfont
+		\interlinepenalty\@M
+		\Huge \bfseries  #1\par\nobreak
+		\vskip 36\p@
+	  }}
+	  \prevdepth=0pt
+	  \vskip\topskip
+	  \vskip-\baselineskip}
+\newcommand{\customchapter}[2]{
+    \setcounter{chapter}{#1}
+    \setcounter{section}{0}
+    \chapter*{#2}
+    \addcontentsline{toc}{chapter}{#2}
+}
+\newcommand{\customtitle}[2]{
+	\begin{flushleft}\textbf{#1 } #2 \end{flushleft}
+	\rowcolors{1}{\oddrowcolor}{\evenrowcolor}
+	\par\medskip	
+}
+\makeatother
+\raggedbottom
+\let\oldurl=\url
+\def\url#1{\begingroup\def\ttfamily{\rmfamily}\oldurl{#1}\endgroup}

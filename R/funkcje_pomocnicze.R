@@ -26,7 +26,7 @@ podrozdzial <- function(tytul){
 #' @return 
 #' @export
 akapit <- function(tresc){
-  cat("\n\n",paste(tresc,collapse="\n\n"))
+  cat("\n\n",zamien_znaki_tex(paste(tresc,collapse="\n\n")))
 }
 #' @title
 #' @description
@@ -170,8 +170,8 @@ zamien_znaki <- function(nazwa, strOrg, strN){
 }
 #' @title Initializacja numeracji
 #' @description
-#' Funkcja initializuje numeracje. U¿ywaj±c numeracji nie powinno siê 
-#' zmieniaæ zmiennej globalnej 'numeracjaTex'.
+#' Funkcja initializuje numeracje. U?ywaj?c numeracji nie powinno si? 
+#' zmienia? zmiennej globalnej 'numeracjaTex'.
 #' @return 
 #' Funkcja zwraca obiekt klasy 'NumeracjaTex'.
 #' @export
@@ -183,8 +183,8 @@ initializuj_numeracje <- function(){
 }
 #' @title Numeracja
 #' @description
-#' Funkcja dokleja do parametru nazwa numer, który oznacza kolejno¶æ wywo³ania funcji z tym parametrem.
-#' U¿ywaj±c numeracji nie powinno siê zmieniaæ zmiennej globalnej 'numeracjaTex'.
+#' Funkcja dokleja do parametru nazwa numer, kt?ry oznacza kolejno?? wywo?ania funcji z tym parametrem.
+#' U?ywaj?c numeracji nie powinno si? zmienia? zmiennej globalnej 'numeracjaTex'.
 #' @param nazwa nazwa numerowanego obiektu
 #' @return 
 #' @export

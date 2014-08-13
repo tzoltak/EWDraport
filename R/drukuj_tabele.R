@@ -15,7 +15,7 @@ drukuj_tabele <- function(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz
                           naglowek = TRUE, zamien_znaki = TRUE ){
   
   if(!is.data.frame(tabela)){
-    tabela = data.frame(tabela)
+    tabela = data.frame(tabela, check.names = FALSE)
   }
   
   if( !is.null(ostatniWiersz) &  length(ostatniWiersz) != ncol(tabela)  ){
@@ -47,13 +47,13 @@ drukuj_tabele <- function(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz
   indeks = min(wiersze)-1
   
   for( ind in 1:indeks ){
-    drukuj_wiersz_tex(linie[ind], znaczniki)
+    EWDraport:::drukuj_wiersz_tex(linie[ind], znaczniki)
   }
   
   # drukuj pierwszy wiersz (naglowek tabeli)
   if(naglowek){
     ind =  wiersze[1]
-    drukuj_wiersz_tabeli(linie[ind], zamien_znaki_tex(colnames(tabela)))
+    EWDraport:::drukuj_wiersz_tabeli(linie[ind], EWDraport:::zamien_znaki_tex(colnames(tabela)))
   }
   
   # drukuj srodkowe wiersze
