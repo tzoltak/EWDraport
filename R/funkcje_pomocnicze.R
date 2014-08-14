@@ -1,68 +1,73 @@
-
-#' @title Drukowanie szablonu latex
+#' @title Drukowanie tytu³u rozdzia³u
 #' @description
-#' 
-#' @param n
+#' Funkcja drukuj±ca kod latex z tytu³em rozdzia³u.
+#' @param tytul tytu³ rozdzia³u.
 #' @return 
+#' Funkcja nic nie zwraca.
 #' @export
 rozdzial <- function(tytul){
   cat(paste0("\\chapter{", tytul, "}"))  
 }
-#' @title Drukowanie szablonu latex
+#' @title Drukowanie podrozdzia³u
 #' @description
-#' 
-#' @param n
+#' Fukcja drukuj±ca kod latex z tytu³em podrozdzia³u
+#' @param tytul tytu³ podrozdzia³u
 #' @return 
+#' Funkcja nic nie zwraca.
 #' @export
 podrozdzial <- function(tytul){
   cat(paste0("\\customsect{\\section*{", tytul, "}}"),"\n")
   cat(paste0("\\addcontentsline{toc}{section}{", tytul, "}"))
 }
-
-#' @title Drukowanie szablonu latex
+#' @title Drukowanie akapitów
 #' @description
-#' 
-#' @param n
-#' @return 
+#' Funkcja drukuje kod akapitów. 
+#' @param tresc wektor ci±gów znakowych z tre¶ci± kolejnych akalpitów.
+#' @return
+#' Funkcja nic nie zwraca. 
 #' @export
 akapit <- function(tresc){
   cat("\n\n",zamien_znaki_tex(paste(tresc,collapse="\n\n")))
 }
-#' @title
+#' @title Nowa strona
 #' @description
-#' 
-#' @param n
-#' @return 
+#' Funkcja drukuj±ca znacznik nowej strony.
+#' @return
+#' Funkcja nic nie zwraca.  
 #' @export
 nowa_strona <- function(){
   cat("\\newpage")
 }
-#' @title
+#' @title Lista numerowana
 #' @description
-#' 
-#' @param n
-#' @return 
+#' Funkcja drukuje kod listy numerowanej.
+#' @param elementyListy 
+#' @return
+#' Funkcja nic nie zwraca. 
 lista_numerowana <- function(elementyListy){
   cat(paste0("\\begin{enumerate}[leftmargin=*]"))
   cat("\n \\item ", paste(elementyListy, collapse="\n \\item "),"\n")
   cat(paste0("\\end{enumerate}")) 
 }
-#' @title
+#' @title Lista punktowana
 #' @description
-#' 
-#' @param n
-#' @return 
+#' Funkcja drukuje kod listy punktowanej
+#' @param elementyListy
+#' @return
+#' Funkcja nic nie zwraca.  
 lista_punktowana <- function(elementyListy){
   cat(paste0("\\begin{itemize}[leftmargin=*]"))
   cat("\n \\item ", paste(elementyListy, collapse="\n \\item "),"\n")
   cat(paste0("\\end{itemize} ")) 
 }
-
 #' @title Drukowanie szablonu latex
 #' @description
-#' 
-#' @param n
-#' @return 
+#' Drukuje szablon z pliku oraz zamienia znaczniki na ci±gi znakowe zdefiniowane przez u¿ytkownika.
+#' @param plikSzablonuTex 
+#' @param znaczniki lista definiuj±ca znaczniki do zabawy.  
+#' @param tex 
+#' @return
+#' Funkcja nic nie zwraca.  
 drukuj_szablon <- function(plikSzablonuTex, znaczniki, tex = TRUE){
   
   con = file(plikSzablonuTex, open="r")
