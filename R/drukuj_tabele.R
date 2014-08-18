@@ -4,11 +4,10 @@
 #' @param tabela dane do zaprezentowania w formie tabeli
 #' @param plikTabeliTex ścieżka pliku szablonu latex.
 #' @param znaczniki lista argumentów, ktore występują w pliku szablonu tabeli.
-#' @param opis opis estymacji
 #' @param ostatniWiersz wektor zawierający ostatni wiersza tabeli.
 #' @param precyzja liczba miejsc po przecinku wyświetlanych dla tabeli 
-#' @param naglowek
-#' @param zamien_znaki 
+#' @param naglowek zmienna boolowska określająca, czy drukować nagłówek.
+#' @param zamien_znaki zmienna określająca, czy zamieniać znaki specjalne latex'owe.
 #' @return Funkcja nie zwraca żadnej wartości.
 #' @export
 drukuj_tabele <- function(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz = NULL, precyzja = 3, 
@@ -47,13 +46,13 @@ drukuj_tabele <- function(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz
   indeks = min(wiersze)-1
   
   for( ind in 1:indeks ){
-    EWDraport:::drukuj_wiersz_tex(linie[ind], znaczniki)
+    drukuj_wiersz_tex(linie[ind], znaczniki)
   }
   
   # drukuj pierwszy wiersz (naglowek tabeli)
   if(naglowek){
     ind =  wiersze[1]
-    EWDraport:::drukuj_wiersz_tabeli(linie[ind], EWDraport:::zamien_znaki_tex(colnames(tabela)))
+    drukuj_wiersz_tabeli(linie[ind], zamien_znaki_tex(colnames(tabela)))
   }
   
   # drukuj srodkowe wiersze
