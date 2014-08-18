@@ -9,6 +9,7 @@
 rm(list = ls())
 Sys.setlocale("LC_ALL", "pl_PL.UTF-8")
 library(EWDraport)
+library(EWDskalowanie)
 @
 
 <<WczytanieDanych, echo = FALSE, results= 'hide', message = FALSE, warning=FALSE >>=
@@ -64,7 +65,7 @@ initializuj_numeracje()
 % 
 % tekstAkapitu = ""
 % 
-% raport_mirt_laczenie( tabela, sub(".r2k$","",plik),
+% raport_laczenie( tabela, sub(".r2k$","",plik),
 %                       tabelaSzablonTex, znacznikiTabeli,
 %                       tekstAkapitu,
 %                       tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, 
@@ -83,7 +84,7 @@ podrozdzial("Korelacje polichoryczne")
 
 pliki = list.files(folderPolichoryczne, pattern =".rkp$")
 
-for(plik in pliki){
+for(plik in pliki[1]){
   load(paste0(folderPolichoryczne, plik))
   tabela = dwaKonstruktyRet$polaczenie
   
@@ -107,7 +108,7 @@ for(plik in pliki){
   
   tekstAkapitu = ""
   
-  raport_mirt_laczenie( tabela, sub(".r2k$","",plik),
+  raport_laczenie( tabela, sub(".r2k$","",plik),
                         tabelaSzablonTex, znacznikiTabeli,
                         tekstAkapitu,
                         tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, 
