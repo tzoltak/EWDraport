@@ -2,17 +2,17 @@
 #' @description
 #' Funkcja drukujaca kod latex z tytułem rozdziału.
 #' @param tytul tytuł rozdziału.
-#' @return 
+#' @return
 #' Funkcja nic nie zwraca.
 #' @export
 rozdzial <- function(tytul){
-  cat(paste0("\\chapter{", tytul, "}"))  
+  cat(paste0("\\chapter{", tytul, "}"))
 }
 #' @title Drukowanie podrozdziału
 #' @description
 #' Fukcja drukujaca kod latex z tytułem podrozdziału
 #' @param tytul tytuł podrozdziału
-#' @return 
+#' @return
 #' Funkcja nic nie zwraca.
 #' @export
 podrozdzial <- function(tytul){
@@ -21,10 +21,10 @@ podrozdzial <- function(tytul){
 }
 #' @title Drukowanie akapitów
 #' @description
-#' Funkcja drukuje kod akapitów. 
+#' Funkcja drukuje kod akapitów.
 #' @param tresc wektor ciągów znakowych z treścią kolejnych akalpitów.
 #' @return
-#' Funkcja nic nie zwraca. 
+#' Funkcja nic nie zwraca.
 #' @export
 akapit <- function(tresc){
   cat("\n\n",zamien_znaki_tex(paste(tresc,collapse="\n\n")))
@@ -33,7 +33,7 @@ akapit <- function(tresc){
 #' @description
 #' Funkcja drukujaca znacznik nowej strony.
 #' @return
-#' Funkcja nic nie zwraca.  
+#' Funkcja nic nie zwraca.
 #' @export
 nowa_strona <- function(){
   cat("\\newpage")
@@ -43,36 +43,36 @@ nowa_strona <- function(){
 #' Funkcja drukuje kod listy numerowanej.
 #' @param elementyListy ciągi znakowe będące elementami listy.
 #' @return
-#' Funkcja nic nie zwraca. 
+#' Funkcja nic nie zwraca.
 lista_numerowana <- function(elementyListy){
   cat(paste0("\\begin{enumerate}[leftmargin=*]"))
   cat("\n \\item ", paste(elementyListy, collapse="\n \\item "),"\n")
-  cat(paste0("\\end{enumerate}")) 
+  cat(paste0("\\end{enumerate}"))
 }
 #' @title Lista punktowana
 #' @description
 #' Funkcja drukuje kod listy punktowanej
 #' @param elementyListy ciągi znakowe będące elementami listy.
 #' @return
-#' Funkcja nic nie zwraca.  
+#' Funkcja nic nie zwraca.
 lista_punktowana <- function(elementyListy){
   cat(paste0("\\begin{itemize}[leftmargin=*]"))
   cat("\n \\item ", paste(elementyListy, collapse="\n \\item "),"\n")
-  cat(paste0("\\end{itemize} ")) 
+  cat(paste0("\\end{itemize} "))
 }
 #' @title Drukowanie szablonu latex
 #' @description
 #' Drukuje szablon z pliku oraz zamienia znaczniki na ciągi znakowe zdefiniowane przez użytkownika.
 #' @param plikSzablonuTex ścieżka do szablonu.
-#' @param znaczniki lista definiująca znaczniki do zabawy.  
+#' @param znaczniki lista definiująca znaczniki do zabawy.
 #' @return
-#' Funkcja nic nie zwraca.  
+#' Funkcja nic nie zwraca.
 drukuj_szablon <- function(plikSzablonuTex, znaczniki){
-  
+
   con = file(plikSzablonuTex, open="r")
-  linie = readLines(con) 
+  linie = readLines(con)
   close(con)
-  
+
   for( ind in seq_along(linie) ){
     drukuj_wiersz_tex(linie[ind], znaczniki)
   }
@@ -83,14 +83,14 @@ drukuj_szablon <- function(plikSzablonuTex, znaczniki){
 #' Funkcja drukuje kod pojedynczej tabeli latex'owej.
 #' @param linia linia z szablonu tabeli.
 #' @param wektor wartości komórek danego wiersza tabeli.
-#' @return 
+#' @return
 #' Funkcja nic nie zwraca.
 drukuj_wiersz_tabeli <- function(linia, wektor){
   spRes = strsplit(linia,"(([ ]*)&([ ]*))+")
   if(length(spRes[[1]]) != 2 ){
     stop("Niepoprawna forma wiersza: ", linia)
   }
-  
+
   cat(spRes[[1]][1], " ", paste0( paste(wektor, collapse=" & "), " ", spRes[[1]][2]), "\n")
   invisible(NULL)
 }
@@ -99,7 +99,7 @@ drukuj_wiersz_tabeli <- function(linia, wektor){
 #' Funkcja drukuje wiersz szablonu uwzględniając znacznki.
 #' @param linia linia kodu latex.
 #' @param znaczniki lista zdefiniowanych znaczników.
-#' @return 
+#' @return
 #' Funkcja nic nie zwraca.
 drukuj_wiersz_tex <- function(linia, znaczniki = NULL  ){
   cat(zamien_znaczniki(linia, znaczniki),"\n")
@@ -111,38 +111,44 @@ drukuj_wiersz_tex <- function(linia, znaczniki = NULL  ){
 #' @param nazwa ciąg znaków.
 #' @param znaczniki lista znaczników i przypisane im ciągi znakowe.
 #' @return
-#' Funkcja zwraca ciąg znaków z zamienionymi znacznikami na zdefiniowane 
+#' Funkcja zwraca ciąg znaków z zamienionymi znacznikami na zdefiniowane
 #' w parametrze znaczniki ciągi znaków.
 zamien_znaczniki <- function(nazwa, znaczniki ){
   if(is.null(znaczniki)){
     return(nazwa)
   }
-  
+
   if( !any( mapply(grepl, paste0("!", names(znaczniki)), nazwa) ) ){
     return(nazwa)
   }
-  
+
   ret = nazwa
   for(i in seq_along(znaczniki)){
-    ret = gsub(paste0("!", names(znaczniki)[i]), zamien_znaki_tex(znaczniki[[i]]), ret, fixed  = TRUE)
+    if(grepl("Plik", names(znaczniki)[i])){
+      ret = gsub(paste0("!", names(znaczniki)[i]), (znaczniki[[i]]), ret,
+                 fixed  = TRUE)
+    } else{
+      ret = gsub(paste0("!", names(znaczniki)[i]), zamien_znaki_tex(znaczniki[[i]]), ret,
+                 fixed  = TRUE)
+    }
   }
   return(ret)
 }
 #' @title Zamień znaki specjalne.
 #' @description
-#' Funkcja przekształca ciąg znaków zastępując wybrane znak specjalne na kod tex, który pozwala 
+#' Funkcja przekształca ciąg znaków zastępując wybrane znak specjalne na kod tex, który pozwala
 #' na wyświetlenie ich w dokumencie tex.
 #' @param nazwa ciąg znaków do zmiany
 #' @return Przekształcony ciąg znaków.
 zamien_znaki_tex <- function(nazwa){
 #   znakiOrg = c("_","^")
 #   znakiTex = c("\\_","\\^{ }")
-#   
+#
 #   ret = nazwa
 #   for(i in seq_along(znakiOrg)){
 #     ret = gsub(znakiOrg[i], znakiTex[i], ret, fixed  = TRUE)
 #   }
-#   
+#
 #   return(ret)
   return(zamien_znaki(nazwa, strOrg = c("_","^"), strN = c("\\_","\\^{ }")))
 }
@@ -159,24 +165,24 @@ zamien_znaki <- function(nazwa, strOrg, strN){
   if(length(strOrg)!=length(strN)){
     stop("Różna długość wektorów ze znakami.")
   }
-  
+
   ret = nazwa
   for(i in seq_along(strOrg)){
     ret = gsub(strOrg[i], strN[i], ret, fixed  = TRUE)
   }
-  
+
   return(ret)
 }
 #' @title Initializacja numeracji
 #' @description
-#' Funkcja initializuje numeracje. Używając numeracji nie powinno się 
+#' Funkcja initializuje numeracje. Używając numeracji nie powinno się
 #' zmieniać zmiennej globalnej określonej parametrem.
 #' @param nazwaZmiennejGlobalnej nazwa zmiennej globalnej.
 #' @param envir środowisko, gdzie znajduje się zmienna o nazwie nazwaZmiennejGlobalnej.
-#' @return 
+#' @return
 #' Funkcja zwraca obiekt klasy 'NumeracjaTex'.
 #' @export
-initializuj_numeracje <- function(nazwaZmiennejGlobalnej = "numeracjaTexZG", 
+initializuj_numeracje <- function(nazwaZmiennejGlobalnej = "numeracjaTexZG",
                                   envir = .GlobalEnv){
   ret = data.frame(nazwa="Wykresy", numer=0, stringsAsFactors = FALSE)
   class(ret) = "NumeracjaTex"
@@ -191,26 +197,26 @@ initializuj_numeracje <- function(nazwaZmiennejGlobalnej = "numeracjaTexZG",
 #' @param nazwa nazwa numerowanego obiektu, np.: 'Tabela'.
 #' @param nazwaZmiennejGlobalnej nazwa zmiennej globalnej.
 #' @param envir środowisko, gdzie znajduje się zmienna o nazwie nazwaZmiennejGlobalnej.
-#' @return 
+#' @return
 #' Funkcja zwraca ciąg znaków.
 #' @export
-numeracja <- function(nazwa, 
-                      nazwaZmiennejGlobalnej = "numeracjaTexZG", 
-                      envir = .GlobalEnv){ 
+numeracja <- function(nazwa,
+                      nazwaZmiennejGlobalnej = "numeracjaTexZG",
+                      envir = .GlobalEnv){
   if( ! nazwaZmiennejGlobalnej %in% ls(envir=envir) || class(get(nazwaZmiennejGlobalnej))!="NumeracjaTex"){
     stop("Obiekt numeracjaTex nie jest poprawnie zainicjowany.")
   }
-  
+
   numeracjaTex = get(nazwaZmiennejGlobalnej, envir=envir)
-  
+
   if(!nazwa %in% numeracjaTex$nazwa){
     numeracjaTex <- rbind(numeracjaTex, data.frame(nazwa=nazwa, numer=0, stringsAsFactors = FALSE))
     class(numeracjaTex) = "NumeracjaTex"
-    # numeracjaTex <<- ret 
+    # numeracjaTex <<- ret
     assign(nazwaZmiennejGlobalnej, numeracjaTex)
   }
-  
-  numer = numeracjaTex$numer[nazwa==numeracjaTex$nazwa] + 1 
+
+  numer = numeracjaTex$numer[nazwa==numeracjaTex$nazwa] + 1
   numeracjaTex$numer[nazwa==numeracjaTex$nazwa] <- numer
   assign(nazwaZmiennejGlobalnej, numeracjaTex, envir=envir)
   return(paste0(nazwa, " ", numer, "."))

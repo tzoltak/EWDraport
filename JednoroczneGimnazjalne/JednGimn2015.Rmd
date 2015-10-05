@@ -1,0 +1,207 @@
+---
+output:
+  pdf_document:
+    dev: cairo_pdf
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+geometry: margin=0.5in
+header-includes:
+  - \usepackage{tabularx}
+  - \usepackage{graphicx}
+---
+
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+suppressMessages(library(pander))
+suppressMessages(library(png))
+
+panderTable <- function(tab, ...){
+  rownames(tab) = NULL
+  if("plec" %in% colnames(tab)){
+    tab$plec = as.character(tab$plec)
+    tab$plec[tab$plec=="m\xea\xbfczyzna"] = "mężczyzna"
+  }
+  
+  pander(tab, ...)
+}
+
+out.format <- knitr::opts_knit$get("out.format")
+img_template <- switch( out.format,
+                     word = list("img-params"=list(fig.width=6,
+                                                   fig.height=6,
+                                                   dpi=600)),
+                     {
+                       # default
+                       list("img-params"=list( dpi=300,
+                                               fig.width=6,
+                                               fig.height=6,
+                                               out.width="804px",
+                                               out.height="804px"))
+                     } )
+
+knitr::opts_template$set( img_template )
+pdf.options(encoding='ISOLatin2.enc')
+panderOptions('knitr.auto.asis', FALSE)
+
+if(all(!grepl('typWskaznika|typSzkoly|rok', ls()))){
+  typWskaznika = "TEST Jednoroczne"
+  typSzkoly = "gimnazjum"
+  rok = 2015
+}
+
+folderRoboczy = "/home/g.golonka/EWDGitHub/EWDraport/JednoroczneGimnazjalne/"
+szablon2rysunki = paste0(folderRoboczy,"texPliki/dwaRysunki.tex")
+
+initializuj_numeracje()
+```
+
+---
+title: `r typWskaznika` modele EWD dla `r typSzkoly` `r rok`
+date: `r Sys.Date()`
+---
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+
+panderOptions('table.split.table', Inf)
+panderOptions('table.emphasize.rownames', FALSE)
+panderOptions('table.caption.prefix', "Table: ")
+# panderOptions('table.caption.prefix', "Tabela: ")
+
+# cat("\\small")
+
+cat("\n\\section{Liczba obserwacji}\\label{liczba-obserwacji}\n")
+tmpTab = tabelki$liczbaZdajacych
+rownames(tmpTab) = NULL
+set.caption("Liczba zdających poszczególne części egzaminu.")
+panderTable(tmpTab, style = 'rmarkdown')
+
+set.caption("Liczba zdających części humanistyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
+tab = tabelki$liczbaZdajacychPoLatach
+tab = tab[, grepl("^rok_g$|^rok_s$|^zdający$|^gh", colnames(tab))]
+panderTable(tab, style = 'rmarkdown')
+
+set.caption("Liczba zdających części matematyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
+tab = tabelki$liczbaZdajacychPoLatach
+tab = tab[, grepl("^rok_g$|^rok_s$|^zdający$|^gm", colnames(tab))]
+panderTable(tab, style = 'rmarkdown')
+# cat("\\normalsize")
+```
+
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+
+cat("\n\\section{Statystyki opisowe}\\label{Statystyki-opisowe}\n")
+
+for(ind in which(grepl("^wy|^we", names(tabelki)))){
+
+  if(grepl("Sum", names(tabelki)[ind])){
+    naglowek = "Podstawowe statystyki dla sum"
+  } else if(grepl("Norm", names(tabelki)[ind])){
+    naglowek = "Podstawowe statystyki dla unormowanych sum"
+  }
+  naglowek = paste0(naglowek, " wyników")
+  
+  if(grepl("^we", names(tabelki)[ind])){
+    naglowek = paste0(naglowek, " egzaminu wejściowego")
+  } else if(grepl("^wy", names(tabelki)[ind])){
+    naglowek = paste0(naglowek, " egzaminu wyjściowego")
+  }
+  
+  if(grepl("Wydl$", names(tabelki)[ind])){
+    naglowek = paste0(naglowek, " w podziale na rok zdawania egzaminu wejściowego.")
+  } else if(grepl("Plec$", names(tabelki)[ind])){
+    naglowek = paste0(naglowek, " w podziale na płcie.")
+  }
+  
+  set.caption(naglowek)
+  cat(panderTable(tabelki[[ind]], style = 'rmarkdown'))
+}
+
+
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis', fig.show='asis'}
+
+cat("\n\\section{Modele EWD}\\label{Modele-EWD}\n")
+
+pasujPlikPorownanie <- function(tekstPliku, pierwszyWiersz){
+  kolumny = strsplit(iconv(tekstPliku[pierwszyWiersz], from = "WINDOWS-1250", to ="UTF-8"),
+                     split = "\t")[[1]]
+  tmp = gsub(",", ".", tekstPliku[pierwszyWiersz+1])
+  tmp = gsub("\"", "", tmp)
+  if(grepl("TRUE", tmp )){
+    wiersz1 = strsplit(tmp, split = "\t")[[1]]
+  } else{
+    wiersz1 = as.numeric(strsplit(tmp, split = "\t")[[1]])
+  }
+  
+  tmp = gsub(",", ".", tekstPliku[pierwszyWiersz+2])
+  tmp = gsub("\"", "", tmp)
+  if(grepl("TRUE", tmp )){
+    wiersz2 = strsplit(tmp, split = "\t")[[1]]
+  } else{
+    wiersz2 = as.numeric(strsplit(tmp, split = "\t")[[1]])
+  }
+  
+  tab = data.frame(rbind( wiersz1, wiersz2))
+  colnames(tab) = kolumny
+  return(tab)
+}
+
+for(ind in seq_along(modele)[1]){
+  nazwaModelu = names(modele)[ind]
+  nazwaModeluUnderscore = gsub("_", "\\\\textunderscore ", nazwaModelu)
+  cat(paste0("\n\\subsection{Model ", nazwaModeluUnderscore, "}\\label{", nazwaModelu, "}\n"))
+  
+  plik = paste0(folderWskazniki, "porownanie ", nazwaModelu, ".txt")
+  
+  tekstPliku = readLines(plik)
+  if(tekstPliku[1]=="linkTest"){
+    set.caption(paste0("Linktest dla ", nazwaModelu, "."))
+    panderTable(pasujPlikPorownanie(tekstPliku, 2))
+  }
+  
+  if(tekstPliku[6]=="czyRosnaca"){
+    set.caption(paste0("CzyRosnaca dla ", nazwaModelu, "."))
+    panderTable(pasujPlikPorownanie(tekstPliku, 7))
+  }
+  
+  if(tekstPliku[11]=="parametry"){
+    set.caption(paste0("Parametry dla ", nazwaModelu, "."))
+    panderTable(pasujPlikPorownanie(tekstPliku, 12))
+  }
+
+  stopienPliki = list.files(paste0(folderWskazniki, "rysunki"), pattern = paste0("^", nazwaModelu, "[_]norm_stopien"))
+  
+  stopnie = unique(gsub(paste0("^", nazwaModelu, 
+                               "[_]norm_stopien([0-9])_wydl[01].png"), "\\1", stopienPliki))
+  
+  for(st in stopnie){
+    
+    cat(paste0("\n\\subsubsection{Wielomian", st, "-ego stopnia}\\label{StopienWielomianu}\n"))
+    
+    rysunki = list.files(paste0(folderWskazniki, "rysunki"), 
+               pattern = paste0("^", nazwaModelu, "[_]norm_stopien", st))
+
+    if(length(rysunki)!=2){
+      stop("Sprawdź liczbę plików.")
+    }
+
+    rysunki = paste0(folderWskazniki, "rysunki/", rysunki)
+    rysunki = gsub(".png", "", rysunki)
+    znacznikiTabeliRysunkow = list( 
+                                Przypis = paste0("Wykresy dla modelu ", nazwaModelu, "."),
+                                Plik1 = rysunki[1],
+                                Plik2 = rysunki[2]
+                                )
+    
+    cat("\n", drukuj_szablon(plikSzablonuTex = szablon2rysunki, znaczniki = znacznikiTabeliRysunkow))
+
+    cat("\n\\pagebreak\n")
+    }
+  
+  }
+
+```
+
