@@ -2,6 +2,7 @@
 
 export(akapit)
 export(drukuj_rysunki)
+export(drukuj_szablon)
 export(drukuj_tabele)
 export(initializuj_numeracje)
 export(nowa_strona)

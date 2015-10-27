@@ -66,6 +66,7 @@ lista_punktowana <- function(elementyListy){
 #' @param plikSzablonuTex ścieżka do szablonu.
 #' @param znaczniki lista definiująca znaczniki do zabawy.
 #' @return
+#' @export
 #' Funkcja nic nie zwraca.
 drukuj_szablon <- function(plikSzablonuTex, znaczniki){
 
