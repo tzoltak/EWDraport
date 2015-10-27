@@ -195,12 +195,13 @@ initializuj_numeracje <- function(nazwaZmiennejGlobalnej = "numeracjaTexZG",
 #' Funkcja dokleja do parametru nazwa numer, który oznacza kolejność wywołania funcji z tym parametrem.
 #' Używając numeracji nie powinno się zmieniać zmiennej globalnej 'numeracjaTex'.
 #' @param nazwa nazwa numerowanego obiektu, np.: 'Tabela'.
+#' @param tylkoNumer jeżeli TRUE zwróci numer obiektu
 #' @param nazwaZmiennejGlobalnej nazwa zmiennej globalnej.
 #' @param envir środowisko, gdzie znajduje się zmienna o nazwie nazwaZmiennejGlobalnej.
 #' @return
 #' Funkcja zwraca ciąg znaków.
 #' @export
-numeracja <- function(nazwa,
+numeracja <- function(nazwa, tylkoNumer = FALSE,
                       nazwaZmiennejGlobalnej = "numeracjaTexZG",
                       envir = .GlobalEnv){
   if( ! nazwaZmiennejGlobalnej %in% ls(envir=envir) || class(get(nazwaZmiennejGlobalnej))!="NumeracjaTex"){
@@ -219,7 +220,12 @@ numeracja <- function(nazwa,
   numer = numeracjaTex$numer[nazwa==numeracjaTex$nazwa] + 1
   numeracjaTex$numer[nazwa==numeracjaTex$nazwa] <- numer
   assign(nazwaZmiennejGlobalnej, numeracjaTex, envir=envir)
-  return(paste0(nazwa, " ", numer, "."))
+  if(tylkoNumer){
+    return(numer)
+  } else{
+    return(paste0(nazwa, " ", numer, "."))
+  }
+
 }
 
 

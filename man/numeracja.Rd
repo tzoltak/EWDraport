@@ -4,11 +4,13 @@
 \alias{numeracja}
 \title{Numeracja}
 \usage{
-numeracja(nazwa, nazwaZmiennejGlobalnej = "numeracjaTexZG",
-  envir = .GlobalEnv)
+numeracja(nazwa, tylkoNumer = FALSE,
+  nazwaZmiennejGlobalnej = "numeracjaTexZG", envir = .GlobalEnv)
 }
 \arguments{
 \item{nazwa}{nazwa numerowanego obiektu, np.: 'Tabela'.}
+
+\item{tylkoNumer}{jeżeli TRUE zwróci numer obiektu}
 
 \item{nazwaZmiennejGlobalnej}{nazwa zmiennej globalnej.}
 
