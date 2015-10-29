@@ -1,4 +1,4 @@
-#' @title Raport łączenie
+#' @title Raport łaczenie
 #' @description
 #' Funkcja drukuje kod latex raportu z łączenia.
 #' @param tabelaPolaczen tabela do wyświetlenia.
@@ -14,22 +14,23 @@
 #' @return Funkcja nie zwraca żadnej wartości.
 #' @export
 raport_laczenie <- function(tabelaPolaczen, nazwaSkalowania,
-                                 tabelaSzablonTex, znacznikiTabeli, 
-                                 tekstAkapitu, 
-                                 tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow, 
+                                 tabelaSzablonTex, znacznikiTabeli,
+                                 tekstAkapitu,
+                                 tabelaSzablonRysunkiTex, znacznikiTabeliRysunkow,
                                  ktoreRys, folderWykresow, szerokosc = 1){
-  
+
   plikTabeliTex = tabelaSzablonTex
-  drukuj_tabele(tabelaPolaczen, tabelaSzablonTex, 
+  drukuj_tabele(tabelaPolaczen, tabelaSzablonTex,
                 znaczniki = znacznikiTabeli, precyzja = 4)
-  
+
   if(!is.null(tekstAkapitu)){
     akapit(tekstAkapitu)
   }
-  
+
   rysunki = paste0(folderWykresow, "{", nazwaSkalowania, "_theta_hist_", ktoreRys, "}.png")
-  
+
   drukuj_rysunki(rysunki, c(2,2), znacznikiTabeliRysunkow, tabelaSzablonRysunkiTex,
                  szerokosc)
   invisible(TRUE)
 }
+

@@ -2,7 +2,7 @@ Encoding: UTF-8
 Package: EWDraport
 Version: 0.2
 Date: 2015-05-22
-Title: Utility functions used to build knitr reports automatically.
+Title: Utility functions used to build knitr reports automatically
 Author: Grzegorz Golonka <ggolonka@o2.pl>
 Maintainer: Grzegorz Golonka <ggolonka@o2.pl>
 Description: Utility functions used to build knitr reports automatically.

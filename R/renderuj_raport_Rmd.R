@@ -1,4 +1,4 @@
-#' @title Funkcja renderująca plik szablonu RMD.
+#' @title Funkcja renderujaca plik szablonu RMD
 #' @description
 #' Funkcja służy do renderowania plików rmd na formaty: pdfi tex.
 #' @param inputFile nazwa pliku rmd z szablonem raportu.

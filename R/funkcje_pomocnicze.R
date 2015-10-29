@@ -1,4 +1,4 @@
-#' @title Drukowanie tytułu rozdziału
+#' @title Drukowanie tytulu rozdzialu
 #' @description
 #' Funkcja drukujaca kod latex z tytułem rozdziału.
 #' @param tytul tytuł rozdziału.
@@ -8,7 +8,7 @@
 rozdzial <- function(tytul){
   cat(paste0("\\chapter{", tytul, "}"))
 }
-#' @title Drukowanie podrozdziału
+#' @title Drukowanie podrozdzialu
 #' @description
 #' Fukcja drukujaca kod latex z tytułem podrozdziału
 #' @param tytul tytuł podrozdziału
@@ -19,7 +19,7 @@ podrozdzial <- function(tytul){
   cat(paste0("\\customsect{\\section*{", tytul, "}}"),"\n")
   cat(paste0("\\addcontentsline{toc}{section}{", tytul, "}"))
 }
-#' @title Drukowanie akapitów
+#' @title Drukowanie akapitow
 #' @description
 #' Funkcja drukuje kod akapitów.
 #' @param tresc wektor ciągów znakowych z treścią kolejnych akalpitów.
@@ -66,8 +66,8 @@ lista_punktowana <- function(elementyListy){
 #' @param plikSzablonuTex ścieżka do szablonu.
 #' @param znaczniki lista definiująca znaczniki do zabawy.
 #' @return
-#' @export
 #' Funkcja nic nie zwraca.
+#' @export
 drukuj_szablon <- function(plikSzablonuTex, znaczniki){
 
   con = file(plikSzablonuTex, open="r")
@@ -135,7 +135,7 @@ zamien_znaczniki <- function(nazwa, znaczniki ){
   }
   return(ret)
 }
-#' @title Zamień znaki specjalne.
+#' @title Zamien znaki specjalne
 #' @description
 #' Funkcja przekształca ciąg znaków zastępując wybrane znak specjalne na kod tex, który pozwala
 #' na wyświetlenie ich w dokumencie tex.
@@ -153,7 +153,7 @@ zamien_znaki_tex <- function(nazwa){
 #   return(ret)
   return(zamien_znaki(nazwa, strOrg = c("_","^"), strN = c("\\_","\\^{ }")))
 }
-#' @title Zamień znaki.
+#' @title Zamien znaki
 #' @description
 #' Funkcja przekształca ciąg znaków zastępując podciągi (zadane parametrem znakiOrg)
 #' na odpowiadające im podciągi zadane parametrem znakiNowe.
@@ -174,9 +174,9 @@ zamien_znaki <- function(nazwa, strOrg, strN){
 
   return(ret)
 }
-#' @title Initializacja numeracji
+#' @title Inicjalizacja numeracji
 #' @description
-#' Funkcja initializuje numeracje. Używając numeracji nie powinno się
+#' Funkcja inicjalizuje numeracje. Używając numeracji nie powinno się
 #' zmieniać zmiennej globalnej określonej parametrem.
 #' @param nazwaZmiennejGlobalnej nazwa zmiennej globalnej.
 #' @param envir środowisko, gdzie znajduje się zmienna o nazwie nazwaZmiennejGlobalnej.
@@ -228,5 +228,3 @@ numeracja <- function(nazwa, tylkoNumer = FALSE,
   }
 
 }
-
-
