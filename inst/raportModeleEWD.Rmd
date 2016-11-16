@@ -1,0 +1,340 @@
+---
+output:
+  pdf_document:
+    dev: cairo_pdf
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+geometry: margin=0.5in
+header-includes:
+  - \usepackage{tabularx}
+  - \usepackage{graphicx}
+  - \usepackage{caption}
+  - \captionsetup[table]{labelformat=empty}
+  - \usepackage[polish]{babel}
+---
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+library(EWDwskazniki)
+obiekty = get("obiekty")
+wymaganeObiekty = c("typSzkoly", "modele", "tabelki", "tytulRaportu", "autorRaportu")
+if (!all(wymaganeObiekty %in% names(obiekty))) {
+  stop("Brak niezbędnych obiektów: '",
+       paste0(wymaganeObiekty[!(wymaganeObiekty %in% names(obiekty))], collapse = "', "),
+       "'.")
+}
+typSzkoly = obiekty$typSzkoly
+modele = obiekty$modele
+tabelki = obiekty$tabelki
+tytulRaportu = obiekty$tytulRaportu
+autorRaportu = obiekty$autorRaportu
+if ("encoding" %in% names(obiekty)) {
+  encoding = obiekty$encoding
+} else {
+  encoding = "windows-1250"
+}
+rm(obiekty)
+
+# \captionsetup[table]{name=New Table Name}
+#   - \captionsetup[table]{labelformat=empty}
+tytuly = data.frame(gh =   "w zakresie przedmiotów humanistycznych",
+                    gh_h = "w zakresie historii i wiedzy o społeczeństwie.",
+                    gh_p = "w zakresie języka polskiego",
+                    gm =   "w zakresie przedmiotów matematyczno-przyrodniczych",
+                    gm_p = "w zakresie przedmiotów przyrodniczych",
+                    gm_m = "w zakresie matematyki", 
+                    m_mR = "w zakresie matematyki", 
+                    mlp =  "w zakresie języka polskiego", 
+                    mlh =  "w zakresie przedmiotów humanistycznych", 
+                    mlm =  "w zakresie matematyki", 
+                    mlmp = "w zakresie przedmiotów matematyczno-przyrodniczych", 
+                    mtp =  "w zakresie języka polskiego", 
+                    mth =  "w zakresie przedmiotów humanistycznych", 
+                    mtm =  "w zakresie matematyki", 
+                    mtmp = "w zakresie przedmiotów matematyczno-przyrodniczych", 
+                    stringsAsFactors = FALSE)
+modelu = tytuly
+rocznik = list("1" = "pierwszy", "2" = "drugi", "3" = "trzeci",
+               "4" = "czwarty", "5" = "piąty", "6" = "szósty")
+
+szablon3rysunki = "trzyRysunki.tex"
+szablon2rysunki = "dwaRysunkiKropka.tex"
+szablon1rysunek = "jedenRysunek.tex"
+
+folderWskazniki = paste0(folderRoboczy, "/")
+if (typSzkoly %in% c("LO", "T")) {
+  egz = "m"
+  if (all(grepl("R$", names(modele)))) {
+    folderRysunki = paste0(folderWskazniki, "rysunki ", typSzkoly, "/")
+  } else if (all(substr(names(modele), 2, 2) %in% "l") |
+             all(substr(names(modele), 2, 2) %in% "t")) {
+    folderRysunki = paste0(folderWskazniki, "rysunki/")
+  } else {
+    stop("Nie można rozpoznać typu szkoły.")
+  }
+} else if (typSzkoly %in% c("gimn.", "gimn")) {
+  egz = "g"
+  typSzkoly = "gimn"
+  folderRysunki = paste0(folderWskazniki, "rysunki/")
+} else {
+  stop("Nie można rozpoznać typu szkoły.")
+}
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+pagebreak = 0;
+resetPageBreak = function(value = 0){
+  pagebreak <<- value;
+}
+printPageBreak = function(){
+  if (pagebreak %% 2 == 1) {
+    cat("\n\n\\clearpage\n\n");
+  }
+  pagebreak <<- pagebreak + 1;
+}
+
+img_template = 
+  list("img-params" = list(dpi = 300, fig.width = 6, fig.height = 6,
+                           out.width = "804px", out.height = "804px"))
+knitr::opts_template$set(img_template)
+pdf.options(encoding = 'ISOLatin2.enc')
+panderOptions('knitr.auto.asis', FALSE)
+
+inicjalizuj_numeracje()
+```
+---
+title: `r tytulRaportu`
+date: `r Sys.Date()`
+author: `r autorRaportu`
+---
+```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+panderOptions('table.split.table', Inf)
+#panderOptions('table.emphasize.rownames', FALSE)
+#panderOptions('table.caption.prefix', "Table: ")
+
+cat("\n\\section{Liczba obserwacji}\\label{liczba-obserwacji}\n")
+tmpTab = tabelki$liczbaZdajacych
+rownames(tmpTab) = NULL
+ustaw_naglowek_tabeli("Liczba zdających poszczególne części egzaminu.")
+pander_table(tmpTab)
+
+if (egz == "g") {
+  ustaw_naglowek_tabeli("Liczba zdających części humanistyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
+  tab = tabelki$liczbaZdajacychPoLatach
+  tab = tab[, grepl("^rok_g$|^rok_s$|^zdający$|^gh", colnames(tab))]
+  pander_table(tab)
+  
+  ustaw_naglowek_tabeli("Liczba zdających części matematyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
+  tab = tabelki$liczbaZdajacychPoLatach
+  tab = tab[, grepl("^rok_g$|^rok_s$|^zdający$|^gm", colnames(tab))]
+  pander_table(tab)
+} else if (egz == "m") {
+  ustaw_naglowek_tabeli("Liczba zdających egzamin w podziale na lata pisania egzaminu gimnazjalnego i matury.")
+  tab = tabelki$liczbaZdajacychPoLatach
+  pander_table(tab)
+}
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+cat("\\pagebreak");
+cat("\n\\section{Statystyki opisowe}\\label{Statystyki-opisowe}\n")
+
+for (ind in which(grepl("^wy|^we", names(tabelki)))) {
+  if (grepl("Sum", names(tabelki)[ind])) {
+    naglowek = "Statystyki opisowe wyników surowych"
+  } else if (grepl("Norm", names(tabelki)[ind])) {
+    naglowek = "Statystyki opisowe wyskalowanych wyników"
+  }
+  
+  if (grepl("^we", names(tabelki)[ind])) {
+    naglowek = paste0(naglowek, " egzaminu „na wejściu”")
+  } else if (grepl("^wy", names(tabelki)[ind])) {
+    naglowek = paste0(naglowek, " egzaminu „na wyjściu”")
+  }
+  
+  if (grepl("Wydl$", names(tabelki)[ind])) {
+    naglowek = paste0(naglowek, " w podziale ze względu na rok zdawania egzaminu „na wejściu”.")
+  } else if (grepl("Plec$", names(tabelki)[ind])) {
+    naglowek = paste0(naglowek, " w podziale na płcie.")
+  }
+  
+  ustaw_naglowek_tabeli(naglowek)
+  cat(pander_table(tabelki[[ind]]))
+}
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis', fig.show='asis'}
+# cat("\n\\section{Modele EWD}\\label{Modele-EWD}\n")
+
+for (ind in seq_along(modele)) {
+  nazwaModelu = names(modele)[ind]
+  
+  cat("\n\n\\pagebreak\n\n")
+  cat(paste0("\n\\section{Model EWD ", tytuly[nazwaModelu],
+             "}\\label{", nazwaModelu, "}\n"))
+  
+  plik = c(paste0(folderWskazniki, "porownanie ",
+                  sub("^m[lt]", "m_", nazwaModelu), ".txt"),
+           paste0(folderWskazniki, "porownanie ", typSzkoly, ".txt"))
+  plik = plik[file.exists(plik)]
+  if (length(plik) == 1) {
+    porownania = parsuj_plik_porownanie(plik, encoding = encoding)
+  } else {
+    stop("Nie udało się otworzyć pliku z porównaniem modeli dla modelu ",
+         nazwaModelu, ".")
+  }
+
+  if ("linkTest" %in% names(porownania)) {
+    ustaw_naglowek_tabeli(paste0("Linktest modeli ", modelu[nazwaModelu], "."))
+    pander_table(porownania$linkTest)
+  }
+  if ("czyRosnaca" %in% names(porownania)) {
+    ustaw_naglowek_tabeli(paste0("Monotoniczność funkcji przewidywania modeli ",
+                               modelu[nazwaModelu], "."))
+    pander_table(porownania$czyRosnaca)
+  }
+  if ("statystyki" %in% names(porownania)) {
+    ustaw_naglowek_tabeli(paste0("Statystyki dopasowania modeli ",
+                               modelu[nazwaModelu], "."))
+    pander_table(porownania$statystyki)
+  }
+  if ("parametry" %in% names(porownania)) {
+    ustaw_naglowek_tabeli(paste0("Statystyki dopasowania modeli ",
+                               modelu[nazwaModelu], "."))
+    pander_table(porownania$parametry)
+  }
+
+  plikiRysunki = list.files(folderRysunki, pattern = "[.]png")
+  plikiRysunki = 
+    plikiRysunki[grepl("_stopien[[:digit:]]_", plikiRysunki) &
+                   grepl(paste0(sub("^m[lt]", "m_", nazwaModelu),
+                                "_(sum|norm|irt)"), plikiRysunki)]
+  stopnie = sort(unique(gsub("^.*_stopien([[:digit:]])_.*$", "\\1", plikiRysunki)))
+  lataWy = gsub("^.*_rok_[sgm]([[:digit:]]{1,4})_.*$", "\\1", plikiRysunki)
+  lataWy = sort(unique(lataWy[lataWy != plikiRysunki]))
+  if (length(lataWy) == 0) {
+    lataWy = ""
+  }
+  wydl = sort(unique(gsub("^.*_wydl([[:digit:]]).*$", "\\1", plikiRysunki)))
+
+  resetPageBreak(1);
+  for (st in stopnie) {
+    cat(paste0("\n\\subsection{Wielomian ", st, "-ego stopnia dla modelu ",
+               modelu[nazwaModelu], "}\\label{StopienWielomianu-,",
+               nazwaModelu, "}\n"))
+    for (strRok in lataWy) {
+      rysunki = plikiRysunki[grepl(paste0("_stopien", st, "_"), plikiRysunki)]
+      if (length(rysunki) > 2) {
+        rysunki = rysunki[grepl(paste0("_rok_[sgm]", strRok, "_"), rysunki)]
+        if (length(rysunki) != 2) {
+          stop("Sprawdź liczbę plików z wykresami stopnia wielomianu. (", nazwaModelu, ")")
+        }
+      } else if (length(rysunki) != 2) {
+        stop("Sprawdź liczbę plików z wykresami stopnia wielomianu. (", nazwaModelu, ")")
+      }
+      rysunki = paste0(folderRysunki, sub(".png", "", rysunki))
+      temp = paste0("Diagnostyka dopasowania wielomianu ",
+                    st, "-ego stopnia dla modelu ",
+                    modelu[nazwaModelu],
+                    ifelse(strRok == "", ".",
+                           paste0(", ", rocznik[[strRok]],
+                                  " rocznik w ramach analizowanego okresu.")))
+      znacznikiTabeliRysunkow = list(Przypis = daj_naglowek_wykresu(temp),
+                                     Plik1 = rysunki[1],
+                                     Plik2 = rysunki[2])
+      cat("\n", drukuj_szablon(plikSzablonuTex = szablon2rysunki,
+                               znaczniki = znacznikiTabeliRysunkow))
+      printPageBreak()
+    }
+  }
+  
+  cat(paste0("\n\\subsection{Podsumowanie modelu ",
+             modelu[nazwaModelu], "}\\label{Podsumowanie-,",
+             nazwaModelu, "}\n"))
+
+  if ("lm" %in% class(modele[[ind]])) {
+    schowek = suppressWarnings(przygotuj_do_schowka_es(modele[[ind]], FALSE))
+  } else if ("lmerMod" %in% class(modele[[ind]])) {
+    schowek = suppressWarnings(przygotuj_do_schowka_me(modele[[ind]], FALSE))
+  } else {
+    stop("Model nieobsługiwanej klasy: '",
+         paste0(class(modele[[ind]]), collapse = "', '"), "'. (", nazwaModelu, ")")
+  }
+  
+  ustaw_naglowek_tabeli("Statystyki dopasowania modelu EWD.")
+  pander(schowek$AICtab)
+
+  ustaw_naglowek_tabeli("Dekompozycja wariancji modelu EWD.")
+  schowek$efLos[, 2] =
+    sub("(Intercept)", "stała", schowek$efLos[, 2], fixed = TRUE)
+  pander(schowek$efLos,
+         justify = ifelse(sapply(schowek$efLos, class) == "numeric",
+                          "right", "left"))
+  
+  ustaw_naglowek_tabeli(paste0("Parametry efektów stałych modelu ",
+                             modelu[nazwaModelu], "."))
+  schowek$efSt[, 1] = gsub(", raw = TRUE", "", schowek$efSt[, 1])
+  schowek$efSt[, 1] = gsub("poly[(]([^,]+),[ ]*[[:digit:]][)]([[:digit:]])", "(\\1^\\2)",
+                           schowek$efSt[, 1])
+  schowek$efSt[, 1] = gsub("I(", "(", schowek$efSt[, 1], fixed = TRUE)
+  schowek$efSt[, 1] = gsub("pleckobieta", "płeć: kobieta", schowek$efSt[, 1])
+  schowek$efSt[, 1] = gsub("dysleksja_mtak", "dysleksja matura", schowek$efSt[, 1])
+  schowek$efSt[, 1] = gsub("dysleksja_gtak", "dysleksja egz. gimn.", schowek$efSt[, 1])
+  schowek$efSt[, 1] = gsub("dysleksja_gtak", "dysleksja spr.", schowek$efSt[, 1])
+  schowek$efSt = schowek$efSt[, -ncol(schowek$efSt) + 0:1]
+  colnames(schowek$efSt) = c("Zmienna", "Wartość", "Odch. Std.", "Statystyka t")
+  pander_table(schowek$efSt)
+
+  rysunki = list.files(folderRysunki, pattern = "[.]png")
+  rysunki = 
+    rysunki[grepl(paste0("_", typSzkoly, "_[[:digit:]]{4}"), rysunki) &
+              grepl(paste0("_", sub("^m[lt]", "m_", nazwaModelu),
+                           "_(homo|norm|reszty|przew)"), rysunki)]
+  rysunki = paste0(folderRysunki, gsub(".png", "", rysunki))
+  if (length(rysunki) == 0) {
+    stop("Sprawdź nazwy plików z wykresami diagnostyki. (", nazwaModelu, ")")
+  }
+
+  temp = paste0("Wykresy diagnostyczne modelu ", modelu[nazwaModelu], ".")
+  znacznikiTabeliRysunkow =
+    list(Przypis = daj_naglowek_wykresu(temp),
+         Plik1 = rysunki[grep("reszty_w_funkcji", rysunki)],
+         Plik2 = rysunki[grep("homoscedatycznosc", rysunki)])
+  # resetPageBreak(1);
+  # printPageBreak();
+  cat("\n", drukuj_szablon(plikSzablonuTex = szablon2rysunki,
+                           znaczniki = znacznikiTabeliRysunkow))
+  znacznikiTabeliRysunkow =
+    list(Przypis = daj_naglowek_wykresu(temp),
+         Plik1 = rysunki[grep("normalnosc_reszt", rysunki)])
+  cat("\n", drukuj_szablon(plikSzablonuTex = szablon1rysunek,
+                           znaczniki = znacznikiTabeliRysunkow))
+  if (length(grep("przew_ef_los_w_funkcji", rysunki)) == 1 &
+      length(grep("normalnosc_ef_los", rysunki)) == 1) {
+    znacznikiTabeliRysunkow =
+      list(Przypis = daj_naglowek_wykresu(temp),
+           Plik1 = rysunki[grep("przew_ef_los_w_funkcji", rysunki)],
+           Plik2 = rysunki[grep("normalnosc_ef_los", rysunki)])
+    cat("\n", drukuj_szablon(plikSzablonuTex = szablon2rysunki,
+                             znaczniki = znacznikiTabeliRysunkow))
+  }
+
+  rysunki = list.files(folderRysunki, pattern = "[.]png")
+  rysunki = rysunki[grepl("panorama_EWD_", rysunki) &
+                      grepl(paste0("_", nazwaModelu, "_[[:digit:]]{4}"), rysunki)]
+  rysunki = paste0(folderRysunki, gsub(".png", "", rysunki))
+  rysunki = rysunki[order(nchar(rysunki))]
+  if (length(rysunki) != 2) {
+    stop("Sprawdź liczbę plików z wykresami panoramy EWD. (", nazwaModelu, ")")
+  }
+  temp = paste0("Związki pomiędzy średnimi wynikami „na wyjściu” i „na wejściu” a EWD ",
+                modelu[nazwaModelu], ".")
+  znacznikiTabeliRysunkow =  list(Przypis = daj_naglowek_wykresu(temp),
+                                  Plik1 = rysunki[1],
+                                  Plik2 = rysunki[2])
+  cat("\n", drukuj_szablon(plikSzablonuTex = szablon2rysunki,
+                           znaczniki = znacznikiTabeliRysunkow))
+  cat("\n\\pagebreak\n")
+  cat("\n\\clearpage\n")
+  }
+```

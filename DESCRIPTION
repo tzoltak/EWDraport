@@ -1,15 +1,19 @@
 Encoding: UTF-8
 Package: EWDraport
-Version: 0.2
-Date: 2015-05-22
+Version: 0.3
 Title: Utility functions used to build knitr reports automatically
-Author: Grzegorz Golonka <ggolonka@o2.pl>
-Maintainer: Grzegorz Golonka <ggolonka@o2.pl>
+Authors@R: c(
+  person("Grzegorz", "Golonka", , "ggolonka@o2.pl", role = c("aut", "cre")),
+  person("Tomasz", "Zoltak", , "tomek@zozlak.org", role = c("aut")))
 Description: Utility functions used to build knitr reports automatically.
 Depends:
-    R (>= 2.15.0),
-    tools,
-    rmarkdown
+  R (>= 3.0.0),
+  pander,
+  rmarkdown,
+  png
+Suggests:
+  EWDwskazniki
 License: MIT + file LICENSE
 Language: PL
 NeedsCompilation: no
+RoxygenNote: 5.0.1

@@ -1,0 +1,6 @@
+--------------------
+Zmiany w EWDdane 0.3 (16.11.2016)
+
+Z pakietu zostały usunięte wszelkie elementy związane z eksperymentami nad
+tworzeniem raportów. Dodano za to funkcje, których definicje wcześniej
+poniewierały się w ramach plików .Rmd z szablonami raportów dot. modeli EWD.
