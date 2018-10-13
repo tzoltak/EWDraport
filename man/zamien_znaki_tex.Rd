@@ -16,4 +16,3 @@ Przekształcony ciąg znaków.
 Funkcja przekształca ciąg znaków zastępując wybrane znak specjalne na kod
 tex, który pozwala na wyświetlenie ich w dokumencie tex.
 }
-

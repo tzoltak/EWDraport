@@ -4,8 +4,9 @@
 \alias{drukuj_tabele}
 \title{Tabela latex}
 \usage{
-drukuj_tabele(tabela, plikTabeliTex, znaczniki = NULL, ostatniWiersz = NULL,
-  precyzja = 3, naglowek = TRUE, zamien_znaki = TRUE)
+drukuj_tabele(tabela, plikTabeliTex, znaczniki = NULL,
+  ostatniWiersz = NULL, precyzja = 3, naglowek = TRUE,
+  zamien_znaki = TRUE)
 }
 \arguments{
 \item{tabela}{dane do zaprezentowania w formie tabeli}
@@ -29,4 +30,3 @@ Funkcja nie zwraca żadnej wartości.
 \description{
 Funkcja przekształca tabelę do kodu tex.
 }
-

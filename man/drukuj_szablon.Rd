@@ -22,4 +22,3 @@ zostanie on wczytany z zasobów pakietu. W przeciwnym wypadku, argument
 \code{plikSzablonuTex} zostanie potraktowany jako ścieżka do pliku
 z szablonem względem aktywnego katalogu roboczego.
 }
-

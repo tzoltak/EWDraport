@@ -18,4 +18,3 @@ w parametrze znaczniki ciągi znaków.
 \description{
 Funkcja zamienia znaczniki na zdefiniowane ciągi znaków.
 }
-

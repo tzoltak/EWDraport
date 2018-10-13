@@ -12,4 +12,3 @@ Funkcja nic nie zwraca.
 \description{
 Funkcja drukujaca znacznik nowej strony.
 }
-

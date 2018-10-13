@@ -18,4 +18,3 @@ Funkcja zwraca kod Rmarkdown opisujący nagłówek wykresu
 \description{
 Funkcja generuje kod Rmarkdown opisujący nagłówek wykresu.
 }
-

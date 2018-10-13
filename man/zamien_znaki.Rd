@@ -22,4 +22,3 @@ Funkcja przekształca ciąg znaków zastępując podciągi (zadane argumentem
 \code{strOrg}) na odpowiadające im podciągi zadane argumentem
 \code{znakiNowe}.
 }
-

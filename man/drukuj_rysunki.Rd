@@ -26,4 +26,3 @@ Funkcja nic nie zwraca.
 Funkcja drukuje kod latex dla szablonu tabeli z rysunkami zadanymi przez
 wektor ścieżek do plików.
 }
-

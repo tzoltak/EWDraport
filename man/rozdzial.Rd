@@ -15,4 +15,3 @@ Funkcja nic nie zwraca.
 \description{
 Funkcja drukujaca kod latex z tytułem rozdziału.
 }
-

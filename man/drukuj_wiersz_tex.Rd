@@ -17,4 +17,3 @@ Funkcja nic nie zwraca.
 \description{
 Funkcja drukuje wiersz szablonu uwzględniając znacznki.
 }
-

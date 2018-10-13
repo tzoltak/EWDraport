@@ -17,4 +17,3 @@ Funkcja nic nie zwraca.
 \description{
 Funkcja drukuje kod pojedynczej tabeli latex'owej.
 }
-

@@ -4,7 +4,7 @@
 \alias{ustaw_naglowek_tabeli}
 \title{Naglowek tabeli}
 \usage{
-ustaw_naglowek_tabeli(tekst, tabelaStr = "Tabela")
+ustaw_naglowek_tabeli(tekst, tabelaStr = "Tabela", tryb = "kable")
 }
 \arguments{
 \item{tekst}{ciąg znaków - opis tabeli}
@@ -19,4 +19,3 @@ Funkcja zwraca kod Rmarkdown, zwrócony przez funkcję
 \description{
 Funkcja generuje kod Rmarkdown opisujący nagłówek tabeli.
 }
-

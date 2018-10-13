@@ -1,5 +1,13 @@
 --------------------
-Zmiany w EWDdane 0.3 (16.11.2016)
+Zmiany w EWDraport 0.4 (13.10.2018)
+
+Zmieniono funkcję tworzącą kod markdown tablic z pander() (z pakietu pander) na
+kable() (z pakietu knitr). Pozwala to uniknąć problemów ze złym kodowaniem
+znaków, które pojawiają się w nowszych wersjach R (choć nie pojawiały się
+w starszych) oraz nieco upiększyć formatowanie liczb w tabelach.
+
+--------------------
+Zmiany w EWDraport 0.3 (16.11.2016)
 
 Z pakietu zostały usunięte wszelkie elementy związane z eksperymentami nad
 tworzeniem raportów. Dodano za to funkcje, których definicje wcześniej

@@ -4,7 +4,8 @@
 \alias{renderuj_raport_Rmd}
 \title{Funkcja renderujaca plik szablonu RMD}
 \usage{
-renderuj_raport_Rmd(szablon, nazwaPliku, obiekty = list(), clean = TRUE)
+renderuj_raport_Rmd(szablon, nazwaPliku, obiekty = list(),
+  clean = TRUE)
 }
 \arguments{
 \item{szablon}{nazwa pliku z szablonem raportu w formacie .Rmd}
@@ -29,4 +30,3 @@ on wczytany z zasobów pakietu. W przeciwnym wypadku, argument \code{szablon}
 zostanie potraktowany jako ścieżka do pliku z szablonem względem aktywnego
 katalogu roboczego.
 }
-

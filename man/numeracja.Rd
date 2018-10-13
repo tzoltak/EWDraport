@@ -25,4 +25,3 @@ Funkcja dokleja do parametru nazwa numer, który oznacza kolejność wywołania
 funcji z tym parametrem.
 Używając numeracji nie powinno się zmieniać zmiennej globalnej 'numeracjaTex'.
 }
-

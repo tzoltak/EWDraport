@@ -12,6 +12,8 @@ header-includes:
   - \usepackage{caption}
   - \captionsetup[table]{labelformat=empty}
   - \usepackage[polish]{babel}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
@@ -108,30 +110,34 @@ date: `r Sys.Date()`
 author: `r autorRaportu`
 ---
 ```{r echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-panderOptions('table.split.table', Inf)
+#panderOptions('table.split.table', Inf)
 #panderOptions('table.emphasize.rownames', FALSE)
 #panderOptions('table.caption.prefix', "Table: ")
 
 cat("\n\\section{Liczba obserwacji}\\label{liczba-obserwacji}\n")
 tmpTab = tabelki$liczbaZdajacych
 rownames(tmpTab) = NULL
-ustaw_naglowek_tabeli("Liczba zdających poszczególne części egzaminu.")
-pander_table(tmpTab)
+n = ustaw_naglowek_tabeli("Liczba zdających poszczególne części egzaminu.")
+#pander_table(tmpTab)
+kable_table(tmpTab, n)
 
 if (egz == "g") {
-  ustaw_naglowek_tabeli("Liczba zdających części humanistyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
+  n = ustaw_naglowek_tabeli("Liczba zdających części humanistyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
   tab = tabelki$liczbaZdajacychPoLatach
   tab = tab[, grepl("^rok_g$|^rok_s$|^zdający$|^gh", colnames(tab))]
-  pander_table(tab)
+  #pander_table(tab)
+  print(kable_table(tab, n))
   
-  ustaw_naglowek_tabeli("Liczba zdających części matematyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
+  n = ustaw_naglowek_tabeli("Liczba zdających części matematyczne w podziale na lata pisania egzaminu gimnazjalnego i sprawdzianu.")
   tab = tabelki$liczbaZdajacychPoLatach
   tab = tab[, grepl("^rok_g$|^rok_s$|^zdający$|^gm", colnames(tab))]
-  pander_table(tab)
+  #pander_table(tab)
+  print(kable_table(tab, n))
 } else if (egz == "m") {
-  ustaw_naglowek_tabeli("Liczba zdających egzamin w podziale na lata pisania egzaminu gimnazjalnego i matury.")
+  n = ustaw_naglowek_tabeli("Liczba zdających egzamin w podziale na lata pisania egzaminu gimnazjalnego i matury.")
   tab = tabelki$liczbaZdajacychPoLatach
-  pander_table(tab)
+  #pander_table(tab)
+  print(kable_table(tab, n))
 }
 ```
 
@@ -158,8 +164,10 @@ for (ind in which(grepl("^wy|^we", names(tabelki)))) {
     naglowek = paste0(naglowek, " w podziale na płcie.")
   }
   
-  ustaw_naglowek_tabeli(naglowek)
-  cat(pander_table(tabelki[[ind]]))
+  n = ustaw_naglowek_tabeli(naglowek)
+  #cat(pander_table(tabelki[[ind]]))
+  print(kable_table(tabelki[[ind]], n))
+  cat("\n\n")
 }
 ```
 
@@ -185,23 +193,27 @@ for (ind in seq_along(modele)) {
   }
 
   if ("linkTest" %in% names(porownania)) {
-    ustaw_naglowek_tabeli(paste0("Linktest modeli ", modelu[nazwaModelu], "."))
-    pander_table(porownania$linkTest)
+    n = ustaw_naglowek_tabeli(paste0("Linktest modeli ", modelu[nazwaModelu], "."))
+    #pander_table(porownania$linkTest)
+    print(kable_table(porownania$linkTest, n))
   }
   if ("czyRosnaca" %in% names(porownania)) {
-    ustaw_naglowek_tabeli(paste0("Monotoniczność funkcji przewidywania modeli ",
-                               modelu[nazwaModelu], "."))
-    pander_table(porownania$czyRosnaca)
+    n = ustaw_naglowek_tabeli(paste0("Monotoniczność funkcji przewidywania modeli ",
+                                     modelu[nazwaModelu], "."))
+    #pander_table(porownania$czyRosnaca)
+    print(kable_table(porownania$czyRosnaca, n))
   }
   if ("statystyki" %in% names(porownania)) {
-    ustaw_naglowek_tabeli(paste0("Statystyki dopasowania modeli ",
-                               modelu[nazwaModelu], "."))
-    pander_table(porownania$statystyki)
+    n = ustaw_naglowek_tabeli(paste0("Statystyki dopasowania modeli ",
+                                     modelu[nazwaModelu], "."))
+    #pander_table(porownania$statystyki)
+    print(kable_table(porownania$statystyki, n))
   }
   if ("parametry" %in% names(porownania)) {
-    ustaw_naglowek_tabeli(paste0("Statystyki dopasowania modeli ",
-                               modelu[nazwaModelu], "."))
-    pander_table(porownania$parametry)
+    n = ustaw_naglowek_tabeli(paste0("Statystyki dopasowania modeli ",
+                                     modelu[nazwaModelu], "."))
+    #pander_table(porownania$parametry)
+    print(kable_table(porownania$parametry, n))
   }
 
   plikiRysunki = list.files(folderRysunki, pattern = "[.]png")
@@ -261,18 +273,22 @@ for (ind in seq_along(modele)) {
          paste0(class(modele[[ind]]), collapse = "', '"), "'. (", nazwaModelu, ")")
   }
   
-  ustaw_naglowek_tabeli("Statystyki dopasowania modelu EWD.")
-  pander(schowek$AICtab)
+  n = ustaw_naglowek_tabeli("Statystyki dopasowania modelu EWD.")
+  #pander(schowek$AICtab)
+  print(kable_table(schowek$AICtab, n))
+  cat("\n\n")
 
-  ustaw_naglowek_tabeli("Dekompozycja wariancji modelu EWD.")
+  n = ustaw_naglowek_tabeli("Dekompozycja wariancji modelu EWD.")
   schowek$efLos[, 2] =
     sub("(Intercept)", "stała", schowek$efLos[, 2], fixed = TRUE)
-  pander(schowek$efLos,
-         justify = ifelse(sapply(schowek$efLos, class) == "numeric",
-                          "right", "left"))
+  # pander(schowek$efLos,
+  #        justify = ifelse(sapply(schowek$efLos, class) == "numeric",
+  #                         "right", "left"))
+  print(kable_table(schowek$efLos, n))
+  cat("\n\n")
   
-  ustaw_naglowek_tabeli(paste0("Parametry efektów stałych modelu ",
-                             modelu[nazwaModelu], "."))
+  n = ustaw_naglowek_tabeli(paste0("Parametry efektów stałych modelu ",
+                                   modelu[nazwaModelu], "."))
   schowek$efSt[, 1] = gsub(", raw = TRUE", "", schowek$efSt[, 1])
   schowek$efSt[, 1] = gsub("poly[(]([^,]+),[ ]*[[:digit:]][)]([[:digit:]])", "(\\1^\\2)",
                            schowek$efSt[, 1])
@@ -283,7 +299,9 @@ for (ind in seq_along(modele)) {
   schowek$efSt[, 1] = gsub("dysleksja_gtak", "dysleksja spr.", schowek$efSt[, 1])
   schowek$efSt = schowek$efSt[, -ncol(schowek$efSt) + 0:1]
   colnames(schowek$efSt) = c("Zmienna", "Wartość", "Odch. Std.", "Statystyka t")
-  pander_table(schowek$efSt)
+  #pander_table(schowek$efSt)
+  print(kable_table(schowek$efSt, n))
+  cat("\n\n")
 
   rysunki = list.files(folderRysunki, pattern = "[.]png")
   rysunki = 

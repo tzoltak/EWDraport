@@ -13,12 +13,11 @@ pander_table(tab, ...)
 funkcji \code{\link[pander]{pander}}}
 }
 \value{
-Funkcja zwraca kod Rmarkdown, zwrócony przez funkcję
-\code{\link[pander]{pander}}
+Funkcja nic nie zwraca, ale jej wywołanie skutkuje przekazaniem na stdout
+kodu Rmarkdown wygenerowanego przez funkcję \code{\link[pander]{pander}}.
 }
 \description{
 Funkcja przygotowuje nieco przekazaną jej macierz lub ramkę danych,
 a następnie zamienia ją na kod Rmarkdown przy pomocy funkcji.
 \code{\link[pander]{pander}}
 }
-

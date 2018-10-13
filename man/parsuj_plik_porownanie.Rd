@@ -4,7 +4,8 @@
 \alias{parsuj_plik_porownanie}
 \title{Wczytywanie wlasnosci modeli}
 \usage{
-parsuj_plik_porownanie(plik, pierwszyWiersz = 1, encoding = "windows-1250")
+parsuj_plik_porownanie(plik, pierwszyWiersz = 1,
+  encoding = "windows-1250")
 }
 \arguments{
 \item{plik}{ciąg znaków - nazwa pliku}
@@ -22,4 +23,3 @@ Funkcja wczytuje plik opisujący własności modeli EWD o różnych stopniach
 wielomianu opisującego zależność pomiędzy wynikami "na wejściu" a wynikami
 "na wyjściu".
 }
-
