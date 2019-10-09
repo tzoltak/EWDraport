@@ -1,6 +1,6 @@
 Encoding: UTF-8
 Package: EWDraport
-Version: 0.4
+Version: 0.4.1
 Title: Utility functions used to build knitr reports automatically
 Authors@R: c(
   person("Grzegorz", "Golonka", , "ggolonka@o2.pl", role = c("aut", "cre")),
@@ -17,4 +17,4 @@ Suggests:
 License: MIT + file LICENSE
 Language: PL
 NeedsCompilation: no
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

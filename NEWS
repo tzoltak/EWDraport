@@ -1,4 +1,13 @@
 --------------------
+Zmiany w EWDraport 0.4.1 (11.10.2019)
+
+Szablon raportu został lepiej dostosowany do specyfiki modeli jednorocznych.
+
+Raporty są generowane w formacie A4.
+
+Kolumny opisujące rok są zapisywane bez spacji oddzielającej tysiące.
+
+--------------------
 Zmiany w EWDraport 0.4 (13.10.2018)
 
 Zmieniono funkcję tworzącą kod markdown tablic z pander() (z pakietu pander) na

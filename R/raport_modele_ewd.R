@@ -34,7 +34,18 @@ kable_table = function(tab, naglowek = NULL,
         break
       }
     }
-    tab[, i] = format(tab[, i], nsmall = j, decimal.mark = ",", big.mark = " ")
+    if (grepl("^rok_", colnames(tab)[i])) {
+      tab[, i] = format(tab[, i], nsmall = j, decimal.mark = ",", big.mark = "")
+    } else {
+      tab[, i] = format(tab[, i], nsmall = j, decimal.mark = ",", big.mark = " ")
+    }
+  }
+  for (i in which(classCol == "integer")) {
+    if (grepl("^rok_", colnames(tab)[i])) {
+      tab[, i] = format(tab[, i], decimal.mark = ",", big.mark = "")
+    } else {
+      tab[, i] = format(tab[, i], decimal.mark = ",", big.mark = " ")
+    }
   }
   kable(tab, align = align, caption = naglowek, format.args = format.args)
 }

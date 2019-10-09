@@ -5,7 +5,8 @@ output:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
-geometry: margin=0.5in
+papersize: a4
+geometry: margin=1.2cm
 header-includes:
   - \usepackage{tabularx}
   - \usepackage{graphicx}
@@ -176,7 +177,7 @@ for (ind in which(grepl("^wy|^we", names(tabelki)))) {
 
 for (ind in seq_along(modele)) {
   nazwaModelu = names(modele)[ind]
-  
+
   cat("\n\n\\pagebreak\n\n")
   cat(paste0("\n\\section{Model EWD ", tytuly[nazwaModelu],
              "}\\label{", nazwaModelu, "}\n"))
@@ -232,7 +233,7 @@ for (ind in seq_along(modele)) {
   resetPageBreak(1);
   for (st in stopnie) {
     cat(paste0("\n\\subsection{Wielomian ", st, "-ego stopnia dla modelu ",
-               modelu[nazwaModelu], "}\\label{StopienWielomianu-,",
+               modelu[nazwaModelu], "}\\label{StopienWielomianu-", st, ",",
                nazwaModelu, "}\n"))
     for (strRok in lataWy) {
       rysunki = plikiRysunki[grepl(paste0("_stopien", st, "_"), plikiRysunki)]
@@ -274,21 +275,29 @@ for (ind in seq_along(modele)) {
   }
   
   n = ustaw_naglowek_tabeli("Statystyki dopasowania modelu EWD.")
+  if ("dopasowanie" %in% names(schowek)) {
+    schowek$AICtab = as.data.frame(as.list(schowek$dopasowanie),
+                                   check.names = FALSE)
+  }
   #pander(schowek$AICtab)
   print(kable_table(schowek$AICtab, n))
   cat("\n\n")
 
-  n = ustaw_naglowek_tabeli("Dekompozycja wariancji modelu EWD.")
-  schowek$efLos[, 2] =
-    sub("(Intercept)", "stała", schowek$efLos[, 2], fixed = TRUE)
-  # pander(schowek$efLos,
-  #        justify = ifelse(sapply(schowek$efLos, class) == "numeric",
-  #                         "right", "left"))
-  print(kable_table(schowek$efLos, n))
-  cat("\n\n")
+  if ("efLos" %in% names(schowek)) {
+    n = ustaw_naglowek_tabeli("Dekompozycja wariancji modelu EWD.")
+    schowek$efLos[, 2] =
+      sub("(Intercept)", "stała", schowek$efLos[, 2], fixed = TRUE)
+    # pander(schowek$efLos,
+    #        justify = ifelse(sapply(schowek$efLos, class) == "numeric",
+    #                         "right", "left"))
+    print(kable_table(schowek$efLos, n))
+    cat("\n\n")
+  }
   
   n = ustaw_naglowek_tabeli(paste0("Parametry efektów stałych modelu ",
                                    modelu[nazwaModelu], "."))
+  schowek$efSt[, 1] = gsub("(Intercept)", "(stała)", schowek$efSt[, 1],
+                           fixed = TRUE)
   schowek$efSt[, 1] = gsub(", raw = TRUE", "", schowek$efSt[, 1])
   schowek$efSt[, 1] = gsub("poly[(]([^,]+),[ ]*[[:digit:]][)]([[:digit:]])", "(\\1^\\2)",
                            schowek$efSt[, 1])
@@ -297,8 +306,10 @@ for (ind in seq_along(modele)) {
   schowek$efSt[, 1] = gsub("dysleksja_mtak", "dysleksja matura", schowek$efSt[, 1])
   schowek$efSt[, 1] = gsub("dysleksja_gtak", "dysleksja egz. gimn.", schowek$efSt[, 1])
   schowek$efSt[, 1] = gsub("dysleksja_gtak", "dysleksja spr.", schowek$efSt[, 1])
+  schowek$efSt[, 1] = gsub("wydl([[:digit:]])", "wydłużona nauka:\\1", schowek$efSt[, 1])
   schowek$efSt = schowek$efSt[, -ncol(schowek$efSt) + 0:1]
-  colnames(schowek$efSt) = c("Zmienna", "Wartość", "Odch. Std.", "Statystyka t")
+  colnames(schowek$efSt) = c("Zmienna", "Wartość", "Odch. Std.",
+                             "Statystyka t", "Istotność")[1:ncol(schowek$efSt)]
   #pander_table(schowek$efSt)
   print(kable_table(schowek$efSt, n))
   cat("\n\n")
